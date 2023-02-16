@@ -1,85 +1,71 @@
-﻿using InnoGotchi.MVC.Models.Farm;
+﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using System.Net;
 
 namespace InnoGotchi.MVC.Controllers
 {
     public class FarmController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        public FarmController(IHttpClientFactory httpClientFactory)
+        private readonly IFarmService _farmService;
+        public FarmController(IFarmService farmService)
         {
-            _httpClientFactory = httpClientFactory;
+            _farmService = farmService;
         }
 
         public async Task<IActionResult> FarmOverview()
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/farms/my-farm"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json" },
-                    { HeaderNames.Authorization, $"Bearer {Request.Cookies["jwt"]}" }
-                }
-            };
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            var farmDto = await _farmService.GetUserFarmOverviewAsync(jwt, userId);
 
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                    return RedirectToAction("SignIn", "Authentication");
-                return View("~/Views/Shared/Error.cshtml", httpResponseMessage.StatusCode.ToString());
-            }
+            Response.Cookies.Append("my-farm-id", farmDto.Id.ToString());
 
-            var contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-            var farmDto = JsonConvert.DeserializeObject<FarmOverviewDto>(contentStream);
-
-
-            httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/farms/friends"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json" },
-                    { HeaderNames.Authorization, $"Bearer {Request.Cookies["jwt"]}" }
-                }
-            };
-
-            httpClient = _httpClientFactory.CreateClient();
-            httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                    return RedirectToAction("SignIn", "Authentication");
-                return View("~/Views/Shared/Error.cshtml", httpResponseMessage.StatusCode.ToString());
-            }
-
-            contentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-            var farms = JsonConvert.DeserializeObject<List<FarmOverviewDto>>(contentStream);
-
-            //получить пользователя?
+            var farms = await _farmService.GetFriendsFramsAsync(jwt, userId);
 
             return View(new FarmViewModel { FarmOverview = farmDto, FriendsFarms = farms });
         }
 
-        public IActionResult FarmDetails()
+        public async Task<IActionResult> FarmDetails(Guid farmId)
         {
-            return View();
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            var farmDetails = await _farmService.GetFarmDetailsAsync(jwt, userId, farmId.ToString());
+
+            return View(new FarmDetailsViewModel() { FarmDetails = farmDetails});
         }
 
-        public IActionResult FarmStatistics()
+        public async Task<IActionResult> FarmStatistics(Guid farmId)
         {
-            return View();
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            var farmStatistics = await _farmService.GetFarmStatisticsAsync(jwt, userId, farmId.ToString());
+
+            return View(farmStatistics);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateFarm(FarmViewModel farmVM)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            var farmDto = await _farmService.CreateFarm(jwt, userId, farmVM.FarmForCreation);
+
+            return RedirectToAction("FarmOverview");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> InviteFriend(FarmDetailsViewModel farmVM)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            await _farmService.InviteFriendAsync(jwt, userId, farmVM.UserForInviting);
+
+            return RedirectToAction("FarmDetails");
         }
     }
 }

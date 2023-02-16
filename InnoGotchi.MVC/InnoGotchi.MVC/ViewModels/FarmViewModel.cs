@@ -6,5 +6,11 @@ namespace InnoGotchi.MVC.ViewModels
     {
         public FarmOverviewDto FarmOverview { get; set; }
         public IEnumerable<FarmOverviewDto> FriendsFarms { get; set; } = Enumerable.Empty<FarmOverviewDto>();
+        public FarmForCreationDto FarmForCreation { get; set; }
+        
+        public FarmViewModel()
+        {
+            FarmForCreation= new FarmForCreationDto();
+        }
     }
 }

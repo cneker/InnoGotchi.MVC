@@ -1,4 +1,8 @@
 ﻿var ctx6 = document.getElementById("pieChart6");
+let alive = Number(ctx6.dataset.alive);
+let dead = Number(ctx6.dataset.dead);
+console.log(alive);
+console.log(dead);
 var pieChart6 = new Chart(ctx6, {
     type: 'pie',
     options: {
@@ -25,7 +29,7 @@ var pieChart6 = new Chart(ctx6, {
         ],
         datasets: [
             {
-                data: [10, 5],
+                data: [alive, dead],
                 borderWidth: 2,
                 backgroundColor: [
                     'rgba(70, 215, 212, 0.2)',

@@ -1,0 +1,95 @@
+﻿@model InnoGotchi.MVC.ViewModels.FarmDetailsViewModel
+
+<link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
+
+<div class="container py-3">
+    <div class="d-flex flex-column align-items-center ">
+        <div class="card">
+            <div class="card-body text-center">
+                  <div class="row">
+                    <div class="col">
+                        <h5 class="card-title">@Model.FarmDetails.Name</h5>
+                        <p class="card-text">Pets count: @Model.FarmDetails.PetsCount</p>
+                    </div>
+                    @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
+                    {
+                        <div class="col border">
+                            <h5 class="card-title">Invite a friend</h5>
+                            <form asp-controller="Farm" asp-action="InviteFriend" method="post">
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Friend's email:</label>
+                                    <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
+                                    <input type="submit" class="btn btn-primary">
+                                </div>
+                            </form>
+                        </div>
+                    }
+                  </div>
+            </div>
+            @foreach (var row in Model.FarmDetails.Pets.Select((item, index) => new { item, index }).GroupBy(_ => _.index / 3, _ => _.item))
+            {
+                <div class="container d-flex">
+                    <div class="row align-items-center">
+                        @foreach (var pet in row)
+                        {
+                            <div class="col">
+                                <div class="card" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">@pet.Name</h5>
+                                        <p class="card-text mb-0">Hunger level: @pet.HungerLevel</p>
+                                        <p class="card-text mb-0">Thirsty level: @pet.ThirstyLevel</p>
+                                        @if (pet.Age == 0)
+                                        {
+                                            <p class="card-text mb-0">Age: newborn</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text mb-0">Age: @pet.Age</p>
+                                        }
+                                        <p class="card-text mb-0">Happyness days count: @pet.HappynessDayCount</p>
+                                        @if (pet.IsAlive)
+                                        {
+                                            <p class="card-text">Status: Alive</p>
+                                            <a href="#" class="btn btn-primary">Feed</a>
+                                            <a href="#" class="btn btn-primary">Give a drink</a>
+                                        }
+                                        else
+                                        {
+                                            <p class="card-text">Status: Dead</p>
+                                        }
+                                        <a asp-controller="Pet" asp-action="PetDetails" asp-route-id="@pet.Id" class="btn btn-primary">Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create your own farm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">Friend email:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </div>
+</div>

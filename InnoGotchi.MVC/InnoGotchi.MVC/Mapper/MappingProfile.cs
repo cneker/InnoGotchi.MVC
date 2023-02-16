@@ -9,6 +9,7 @@ namespace InnoGotchi.MVC.Mapper
         {
             CreateMap<UserInfoDto, UserForAuthenticationDto>()
                 .ForMember(u => u.Password, opt => opt.Ignore());
+            CreateMap<UserInfoDto, UserInfoForUpdateDto>();
         }
     }
 }

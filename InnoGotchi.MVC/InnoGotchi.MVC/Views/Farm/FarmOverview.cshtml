@@ -37,8 +37,8 @@
                     <div class="card-body">
                         <h5 class="card-title">@Model.FarmOverview.Name</h5>
                         <p class="card-text">Pets count: @Model.FarmOverview.PetsCount</p>
-                        <a href="#" class="btn btn-primary">Details</a>
-                        <a href="#" class="btn btn-primary">Statistics</a>
+                        <a asp-controller="Farm" asp-action="FarmDetails" asp-route-farmId="@Model.FarmOverview.Id" class="btn btn-primary">Details</a>
+                        <a asp-controller="Farm" asp-action="FarmStatistics" asp-route-farmId="@Model.FarmOverview.Id" class="btn btn-primary">Statistics</a>
                     </div>
                 </div>
             </div>           
@@ -68,7 +68,8 @@
                         <div class="card-body">
                             <h5 class="card-title">@farm.Name</h5>
                             <p class="card-text">Pets count: @farm.PetsCount</p>
-                            <a href="#" class="btn btn-primary">Details</a>
+                            <a asp-controller="Farm" asp-action="FarmDetails" asp-route-farmId="@farm.Id" class="btn btn-primary">Details</a>
+                            <a asp-controller="Farm" asp-action="FarmStatistics" asp-route-farmId="@farm.Id" class="btn btn-primary">Statistics</a>
                         </div>
                     </div>
                 </div>
@@ -86,18 +87,18 @@
         <h5 class="modal-title" id="exampleModalLabel">Create your own farm</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Name:</label>
-            <input type="text" class="form-control" id="recipient-name">
+      <form asp-controller="Farm" asp-action="CreateFarm">
+          <div class="modal-body">
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Name:</label>
+                <input type="text" class="form-control" asp-for="FarmForCreation.Name" id="recipient-name">
+              </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Create</button>
-      </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <input type="submit" class="btn btn-primary" value="Create"/>
+          </div>
+      </form>
     </div>
   </div>
 </div>

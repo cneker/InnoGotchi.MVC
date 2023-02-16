@@ -12,6 +12,9 @@ builder.Services.CongifureMapping();
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication();
 builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureServices();
+builder.Services.ConfigureCookies();
+builder.Services.ConfigureHelpers();
 
 var app = builder.Build();
 
