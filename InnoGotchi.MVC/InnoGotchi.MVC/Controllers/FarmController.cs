@@ -1,4 +1,5 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
+using InnoGotchi.MVC.Services;
 using InnoGotchi.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,11 @@ namespace InnoGotchi.MVC.Controllers
     public class FarmController : Controller
     {
         private readonly IFarmService _farmService;
-        public FarmController(IFarmService farmService)
+        private readonly IPetService _petService;
+        public FarmController(IFarmService farmService, IPetService petService)
         {
             _farmService = farmService;
+            _petService = petService;
         }
 
         public async Task<IActionResult> FarmOverview()
@@ -44,6 +47,26 @@ namespace InnoGotchi.MVC.Controllers
             var farmStatistics = await _farmService.GetFarmStatisticsAsync(jwt, userId, farmId.ToString());
 
             return View(farmStatistics);
+        }
+
+        public async Task<IActionResult> Feed(Guid farmId, Guid petId)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            await _petService.FeedAsync(jwt, userId, farmId.ToString(), petId.ToString());
+
+            return RedirectToAction("FarmDetails", new { farmId });
+        }
+
+        public async Task<IActionResult> GiveADrink(Guid farmId, Guid petId)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            await _petService.GiveADrinkAsync(jwt, userId, farmId.ToString(), petId.ToString());
+
+            return RedirectToAction("FarmDetails", new { farmId });
         }
 
         [HttpPost]
