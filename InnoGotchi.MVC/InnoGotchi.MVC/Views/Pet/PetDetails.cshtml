@@ -1,119 +1,51 @@
-﻿<link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
+﻿@model InnoGotchi.MVC.ViewModels.PetDetailsViewModel
+
+@{
+    var bodyPath = $"https://localhost:7208/images/bodies/body{Model.PetDetails.Body}.svg";
+    var eyesPath = $"https://localhost:7208/images/eyes/eyes{Model.PetDetails.Eye}.svg";
+    var nosePath = $"https://localhost:7208/images/noses/nose{Model.PetDetails.Nose}.svg";
+    var mouthPath = $"https://localhost:7208/images/mouths/mouth{Model.PetDetails.Mouth}.svg";
+}
+
+<link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
 
 <div class="container py-3">
     <div class="row">
         <div class="d-flex flex-column col-4">
             <div class="card" style="width: 14rem;">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Pet's name</h5>
-                    <p class="card-text mb-0">Hunger level: Full</p>
-                    <p class="card-text mb-0">Thirsty level: Thirsty</p>
-                    <p class="card-text mb-0">Age: Newborn</p>
-                    <p class="card-text mb-0">Status: Alive</p>
-                    <p class="card-text">Happiness days count: 15</p>
-                    <a href="#" class="btn btn-primary">Feed</a>
-                    <a href="#" class="btn btn-primary">Gice a drink</a>
-
+                    <h5 class="card-title text-center">@Model.PetDetails.Name</h5>
+                    <p class="card-text mb-0">Hunger level: @Model.PetDetails.HungerLevel</p>
+                    <p class="card-text mb-0">Thirsty level: @Model.PetDetails.ThirstyLevel</p>
+                    @if (Model.PetDetails.Age == 0)
+                    {
+                        <p class="card-text mb-0">Age: Newborn</p>
+                    }
+                    else
+                    {
+                        <p class="card-text mb-0">Age: @Model.PetDetails.Age</p>
+                    }
+                    @if (Model.PetDetails.IsAlive)
+                    {
+                        <p class="card-text mb-0">Status: Alive</p>
+                        <a asp-controller="Pet" asp-action="Feed" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" class="btn btn-primary">Feed</a>
+                        <a asp-controller="Pet" asp-action="GiveADrink" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" class="btn btn-primary">Give a drink</a>
+                    }
+                    else
+                    {
+                        <p class="card-text mb-0">Status: Dead</p>
+                    }
+                    <p class="card-text">Happiness days count: @Model.PetDetails.HappynessDayCount</p>
                 </div>
             </div>   
         </div>
         <div class="flex-column position-relative d-flex col">
-            <img id="body" alt="error" style="max-width: 90%" class="" src="https://localhost:7208/images/bodies/body1.svg"/>
-            <img id="eyes" alt="error" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" src="https://localhost:7208/images/eyes/eyes1.svg"/>
-            <img id="nose" alt="error" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" src="https://localhost:7208/images/noses/nose1.svg"/>
-            <img id="mouth" alt="error" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" src="https://localhost:7208/images/mouths/mouth1.svg"/>
+            <img id="body" alt="error" style="max-width: 90%" data-type="@Model.PetDetails.Body" src= "@bodyPath"/>
+            <img id="eyes" alt="error" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" src="@eyesPath"/>
+            <img id="nose" alt="error" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" src="@nosePath"/>
+            <img id="mouth" alt="error" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" src="@mouthPath"/>
         </div>
     </div>
-
-@*было тут*@
 </div>
 
-
-
-<script>
-//$.ajax(
-//    {
-//        url: "https://localhost:7208/api/bodies/test",
-//        method: "get",
-
-//        success: function(data) {
-//            console.log("nice");
-//            $("#body1").attr("src", data);
-//        }
-//    }
-//);
-
-var eyes = document.getElementById("eyes");
-var nose = document.getElementById("nose");
-var mouth = document.getElementById("mouth");
-var body = document.getElementById("body");
-var bodyType = 1;
-if (bodyType == 1) {
-    eyes.style.maxWidth = '15%';
-    eyes.style.marginLeft = "31%";
-    eyes.style.marginTop = '10%';
-
-    nose.style.maxWidth = '5%';
-    nose.style.marginLeft = "36%";
-    nose.style.marginTop = '19%';
-
-    mouth.style.maxWidth = '14%';
-    mouth.style.marginLeft = "32%";
-    mouth.style.marginTop = '19%';
-}
-else if (bodyType == 2) {
-    eyes.style.maxWidth = '20%';
-    eyes.style.marginLeft = "32%";
-    eyes.style.marginTop = '15%';
-
-    nose.style.maxWidth = '8%';
-    nose.style.marginLeft = "38%";
-    nose.style.marginTop = '26%';
-
-    mouth.style.maxWidth = '19%';
-    mouth.style.marginLeft = "33%";
-    mouth.style.marginTop = '28%';
-}
-else if (bodyType == 3) {
-    eyes.style.maxWidth = '15%';
-    eyes.style.marginLeft = "35%";
-    eyes.style.marginTop = '10%';
-
-    nose.style.maxWidth = '5%';
-    nose.style.marginLeft = "40%";
-    nose.style.marginTop = '19%';
-
-    mouth.style.maxWidth = '14%';
-    mouth.style.marginLeft = "36%";
-    mouth.style.marginTop = '19%';
-}
-else if (bodyType == 4) {
-    eyes.style.maxWidth = '12%';
-    eyes.style.marginLeft = "38%";
-    eyes.style.marginTop = '6%';
-
-    nose.style.maxWidth = '3%';
-    nose.style.marginLeft = "43%";
-    nose.style.marginTop = '12%';
-
-    mouth.style.maxWidth = '13%';
-    mouth.style.marginLeft = "38%";
-    mouth.style.marginTop = '11%';
-}
-else if (bodyType == 5) {
-    body.style.maxWidth = '80%';
-    body.style.marginTop = '-20%';
-
-    eyes.style.maxWidth = '13%';
-    eyes.style.marginLeft = "37%";
-    eyes.style.marginTop = '4%';
-
-    nose.style.maxWidth = '3%';
-    nose.style.marginLeft = "56%";
-    nose.style.marginTop = '12%';
-
-    mouth.style.maxWidth = '18%';
-    mouth.style.marginLeft = "44%";
-    mouth.style.marginTop = '11%';
-}
-</script>
+<script src="~/js/petDetails.js" />
