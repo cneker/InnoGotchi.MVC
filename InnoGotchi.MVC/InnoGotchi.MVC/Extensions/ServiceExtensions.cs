@@ -18,6 +18,7 @@ namespace InnoGotchi.MVC.Extensions
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFarmService, FarmService>();
+            services.AddScoped<IPetService, PetService>();
         }
 
         public static void ConfigureHelpers(this IServiceCollection services)

@@ -1,8 +1,11 @@
-﻿namespace InnoGotchi.MVC.Contracts.Services
+﻿using InnoGotchi.MVC.Models.Pet;
+
+namespace InnoGotchi.MVC.Contracts.Services
 {
     public interface IPetService
     {
-        Task Feed(string jwt, Guid petId);
-        Task GiveADrink(string jwt, Guid petIt);
+        Task FeedAsync(string jwt, string userId, string farmId, string petId);
+        Task GiveADrinkAsync(string jwt, string userId, string farmId, string petId);
+        Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, string farmId, string petId);
     }
 }
