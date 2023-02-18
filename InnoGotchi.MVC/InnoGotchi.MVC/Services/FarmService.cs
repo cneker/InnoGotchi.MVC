@@ -3,6 +3,7 @@ using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.Models.User;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Net.Http;
 using System.Text;
 
 namespace InnoGotchi.MVC.Services
@@ -132,18 +133,38 @@ namespace InnoGotchi.MVC.Services
             return farmDetails;
         }
 
-        public async Task InviteFriendAsync(string jwt, string userId, UserForInvitingDto userDto)
+        public async Task InviteFriendAsync(string jwt, string userId, string farmId, UserForInvitingDto userDto)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/collaborators"),
+                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/invite-collaborator"),
                 Headers =
                 {
                     { HeaderNames.Accept, "application/json; charset=utf-8" },
                     { HeaderNames.Authorization, $"Bearer {jwt}" }
                 },
                 Content = new StringContent(JsonConvert.SerializeObject(userDto), Encoding.UTF8, "application/json")
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+
+            await httpResponseMessage.Content.ReadAsStringAsync();
+        }
+
+        public async Task UpdateFarmAsync(string jwt, string userId, string farmId, FarmForUpdateDto farmDto)
+        {
+            var httpRequestMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}"),
+                Headers =
+                {
+                    { HeaderNames.Accept, "application/json; charset=utf-8" },
+                    { HeaderNames.Authorization, $"Bearer {jwt}" }
+                },
+                Content = new StringContent(JsonConvert.SerializeObject(farmDto), Encoding.UTF8, "application/json")
             };
 
             var httpClient = _httpClientFactory.CreateClient();

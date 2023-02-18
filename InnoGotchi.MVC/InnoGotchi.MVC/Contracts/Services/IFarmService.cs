@@ -10,6 +10,7 @@ namespace InnoGotchi.MVC.Contracts.Services
         Task<FarmOverviewDto> CreateFarm(string jwt, string userId, FarmForCreationDto farmDto);
         Task<FarmStatisticsDto> GetFarmStatisticsAsync(string jwt, string userId, string farmId);
         Task<FarmDetailsDto> GetFarmDetailsAsync(string jwt, string userId, string farmId);
-        Task InviteFriendAsync(string jwt, string userId, UserForInvitingDto userDto);
+        Task InviteFriendAsync(string jwt, string userId, string farmId, UserForInvitingDto userDto);
+        Task UpdateFarmAsync(string jwt, string userId, string farmId, FarmForUpdateDto farmDto);
     }
 }

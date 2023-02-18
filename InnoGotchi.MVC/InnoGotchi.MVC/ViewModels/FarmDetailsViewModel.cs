@@ -7,6 +7,7 @@ namespace InnoGotchi.MVC.ViewModels
     {
         public FarmDetailsDto FarmDetails { get; set; }
         public UserForInvitingDto UserForInviting { get; set; }
+        public FarmForUpdateDto FarmForUpdate { get; set; }
         public FarmDetailsViewModel()
         {
             UserForInviting= new UserForInvitingDto();

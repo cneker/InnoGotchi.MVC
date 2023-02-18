@@ -23,7 +23,13 @@
                     <div class="card-body text-center">
                         <div class="row">
                             <div class="col">
-                                <h5 class="card-title">@Model.FarmDetails.Name</h5>
+                                <h5 class="card-title">
+                                    @Model.FarmDetails.Name                                 
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        Update
+                                    </button>
+                                </h5>
+
                                 <p class="card-text">Pets count: @Model.FarmDetails.PetsCount</p>
                             </div>
                         </div>
@@ -80,7 +86,7 @@
                     <div class="card">
                         <div class="card-body text-center">
                             <div class="row">
-                                <form asp-controller="Farm" asp-action="InviteFriend" method="post">
+                                <form asp-controller="Farm" asp-action="InviteFriend" asp-route-farmId="@Model.FarmDetails.Id" method="post">
                                     <div class="mb-3">
                                         <label for="recipient-name" class="col-form-label">Friend's email:</label>
                                         <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
@@ -94,4 +100,27 @@
             </div>
         </div>
     }
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create your own farm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Farm" asp-action="UpdateFarm" asp-route-farmId="@Model.FarmDetails.Id" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" asp-for="FarmForUpdate.Name" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Update" />
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

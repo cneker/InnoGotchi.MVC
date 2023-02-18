@@ -1,4 +1,6 @@
-﻿using InnoGotchi.MVC.Contracts.Services;
+﻿using AutoMapper;
+using InnoGotchi.MVC.Contracts.Services;
+using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.Services;
 using InnoGotchi.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,10 +11,12 @@ namespace InnoGotchi.MVC.Controllers
     {
         private readonly IFarmService _farmService;
         private readonly IPetService _petService;
-        public FarmController(IFarmService farmService, IPetService petService)
+        private readonly IMapper _mapper;
+        public FarmController(IFarmService farmService, IPetService petService, IMapper mapper)
         {
             _farmService = farmService;
             _petService = petService;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> FarmOverview()
@@ -36,7 +40,13 @@ namespace InnoGotchi.MVC.Controllers
 
             var farmDetails = await _farmService.GetFarmDetailsAsync(jwt, userId, farmId.ToString());
 
-            return View(new FarmDetailsViewModel() { FarmDetails = farmDetails});
+            var farmDetailVM = new FarmDetailsViewModel()
+            {
+                FarmDetails = farmDetails,
+                FarmForUpdate = _mapper.Map<FarmForUpdateDto>(farmDetails)
+            };
+
+            return View(farmDetailVM);
         }
 
         public async Task<IActionResult> FarmStatistics(Guid farmId)
@@ -81,14 +91,25 @@ namespace InnoGotchi.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> InviteFriend(FarmDetailsViewModel farmVM)
+        public async Task<IActionResult> InviteFriend(Guid farmId, FarmDetailsViewModel farmVM)
         {
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            await _farmService.InviteFriendAsync(jwt, userId, farmVM.UserForInviting);
+            await _farmService.InviteFriendAsync(jwt, userId, farmId.ToString(), farmVM.UserForInviting);
 
-            return RedirectToAction("FarmDetails");
+            return RedirectToAction("FarmDetails", new { farmId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateFarm(Guid farmId, FarmDetailsViewModel farmVM)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            await _farmService.UpdateFarmAsync(jwt, userId, farmId.ToString(), farmVM.FarmForUpdate);
+
+            return RedirectToAction("FarmDetails", new { farmId });
         }
     }
 }
