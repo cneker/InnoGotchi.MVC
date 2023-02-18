@@ -2,6 +2,7 @@
 using InnoGotchi.MVC.Models.Pet;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace InnoGotchi.MVC.Services
 {
@@ -65,6 +66,24 @@ namespace InnoGotchi.MVC.Services
                     { HeaderNames.Accept, "application/json" },
                     { HeaderNames.Authorization, $"Bearer {jwt}" }
                 }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            await httpClient.SendAsync(httpRequstMessage);
+        }
+
+        public async Task UpdatePetAsync(string jwt, string userId, string farmId, string petId, PetForUpdateDto petDto)
+        {
+            var httpRequstMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Put,
+                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/pets/{petId}"),
+                Headers =
+                {
+                    { HeaderNames.Accept, "application/json" },
+                    { HeaderNames.Authorization, $"Bearer {jwt}" }
+                },
+                Content = new StringContent(JsonConvert.SerializeObject(petDto), Encoding.UTF8, "application/json")
             };
 
             var httpClient = _httpClientFactory.CreateClient();
