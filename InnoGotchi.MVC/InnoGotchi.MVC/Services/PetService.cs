@@ -1,5 +1,6 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Pet;
+using InnoGotchi.MVC.RequestFeatures;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Text;
@@ -88,6 +89,37 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             await httpClient.SendAsync(httpRequstMessage);
+        }
+
+        public async Task<PetPagingDto> GetPetsAsync(string jwt, string pageNumber, string orderBy, string pageSize)
+        {
+            var httpRequstMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://localhost:7208/api/pets?OrderBy={orderBy}&PageSize={pageSize}&PageNumber={pageNumber}"),
+                Headers =
+                {
+                    { HeaderNames.Accept, "application/json" },
+                    { HeaderNames.Authorization, $"Bearer {jwt}" }
+                }
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+
+            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
+
+            var pets = JsonConvert.DeserializeObject<IEnumerable<PetDetailsDto>>(jsonContent);
+
+            var paginationHeaderValue = httpResponseMessage.Headers.GetValues("X-Pagination").First();
+
+            var petPaging = new PetPagingDto
+            {
+                PetDetails = pets,
+                MetaData = JsonConvert.DeserializeObject<MetaData>(paginationHeaderValue)
+            };
+
+            return petPaging;
         }
     }
 }

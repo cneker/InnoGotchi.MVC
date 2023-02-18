@@ -8,5 +8,6 @@ namespace InnoGotchi.MVC.Contracts.Services
         Task GiveADrinkAsync(string jwt, string userId, string farmId, string petId);
         Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, string farmId, string petId);
         Task UpdatePetAsync(string jwt, string userId, string farmId, string petId, PetForUpdateDto petDto);
+        Task<PetPagingDto> GetPetsAsync(string jwt, string pageNumber, string orderBy, string pageSize);
     }
 }

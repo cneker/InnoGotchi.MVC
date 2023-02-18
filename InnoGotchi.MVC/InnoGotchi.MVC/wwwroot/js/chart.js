@@ -1,8 +1,6 @@
 ﻿var ctx6 = document.getElementById("pieChart6");
 let alive = Number(ctx6.dataset.alive);
 let dead = Number(ctx6.dataset.dead);
-console.log(alive);
-console.log(dead);
 var pieChart6 = new Chart(ctx6, {
     type: 'pie',
     options: {

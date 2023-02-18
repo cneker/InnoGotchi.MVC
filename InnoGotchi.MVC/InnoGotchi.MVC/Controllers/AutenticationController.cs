@@ -48,11 +48,12 @@ namespace InnoGotchi.MVC.Controllers
             return RedirectToAction("FarmOverview", "Farm");
         }
 
-        public async Task<IActionResult> LogOut()
+        public IActionResult LogOut()
         {
             Response.Cookies.Delete("jwt");
             Response.Cookies.Delete("name");
             Response.Cookies.Delete("avatar");
+            Response.Cookies.Delete("my-farm-id");
 
             return RedirectToAction("Index", "Home");
         }
