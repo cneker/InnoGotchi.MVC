@@ -1,105 +1,193 @@
 ﻿@model InnoGotchi.MVC.ViewModels.FarmDetailsViewModel
 
 <link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
+<div class="align-items-start">
+    <div class="row">
+        @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
+        {
+            <div class="col-lg-2">
+                <ul class="flex-column nav nav-pills mb-3 nav-justified" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">My farm</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Invite a friend</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="pills-create-tab" data-bs-toggle="pill" data-bs-target="#pills-create" type="button" role="tab" aria-controls="pills-create" aria-selected="false">Create a pet</button>
+                    </li>
+                </ul>
+            </div>
+        }
+        <div class="col tab-content flex-column" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="container py-3">
+                    <div class="d-flex flex-column align-items-center ">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title">
+                                            @Model.FarmDetails.Name
+                                            @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
+                                            {
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    Update
+                                                </button>
+                                            }
+                                        </h5>
 
-@if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
-{
-    <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">My own farm</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Invite a friend</button>
-        </li>
-    </ul>
-}
+                                        <p class="card-text">Pets count: @Model.FarmDetails.PetsCount</p>
+                                    </div>
+                                </div>
+                            </div>
+                            @foreach (var row in Model.FarmDetails.Pets.Select((item, index) => new { item, index }).GroupBy(_ => _.index / 3, _ => _.item))
+                            {
+                                <div class="container d-flex">
+                                    <div class="row align-items-center">
+                                        @foreach (var pet in row)
+                                        {
+                                            <div class="col">
+                                                <div class="card" style="width: 18rem;">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title text-center">@pet.Name</h5>
+                                                        <p class="card-text mb-0">Hunger level: @pet.HungerLevel</p>
+                                                        <p class="card-text mb-0">Thirsty level: @pet.ThirstyLevel</p>
+                                                        @if (pet.Age == 0)
+                                                        {
+                                                            <p class="card-text mb-0">Age: newborn</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p class="card-text mb-0">Age: @pet.Age</p>
+                                                        }
+                                                        <p class="card-text mb-0">Happyness days count: @pet.HappynessDayCount</p>
+                                                        @if (pet.IsAlive)
+                                                        {
+                                                            <p class="card-text">Status: Alive</p>
+                                                            <a asp-controller="Farm" asp-action="Feed" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Feed</a>
+                                                            <a asp-controller="Farm" asp-action="GiveADrink" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Give a drink</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <p class="card-text">Status: Dead</p>
+                                                        }
+                                                        <a asp-controller="Pet" asp-action="PetDetails" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
 
-
-<div class="tab-content" id="pills-tabContent">
-    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-        <div class="container py-3">
-            <div class="d-flex flex-column align-items-center ">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <div class="row">
-                            <div class="col">
-                                <h5 class="card-title">
-                                    @Model.FarmDetails.Name                                 
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                        Update
-                                    </button>
-                                </h5>
-
-                                <p class="card-text">Pets count: @Model.FarmDetails.PetsCount</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
+            {
+                <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    <div class="container py-3">
+                        <div class="d-flex flex-column align-items-center ">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="row">
+                                        <form asp-controller="Farm" asp-action="InviteFriend" asp-route-farmId="@Model.FarmDetails.Id" method="post">
+                                            <div class="mb-3">
+                                                <label for="recipient-name" class="col-form-label">Friend's email:</label>
+                                                <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
+                                                <input type="submit" class="btn btn-primary mt-3">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @foreach (var row in Model.FarmDetails.Pets.Select((item, index) => new { item, index }).GroupBy(_ => _.index / 3, _ => _.item))
-                    {
-                        <div class="container d-flex">
-                            <div class="row align-items-center">
-                                @foreach (var pet in row)
-                                {
-                                    <div class="col">
-                                        <div class="card" style="width: 18rem;">
-                                            <div class="card-body">
-                                                <h5 class="card-title text-center">@pet.Name</h5>
-                                                <p class="card-text mb-0">Hunger level: @pet.HungerLevel</p>
-                                                <p class="card-text mb-0">Thirsty level: @pet.ThirstyLevel</p>
-                                                @if (pet.Age == 0)
-                                                {
-                                                    <p class="card-text mb-0">Age: newborn</p>
-                                                }
-                                                else
-                                                {
-                                                    <p class="card-text mb-0">Age: @pet.Age</p>
-                                                }
-                                                <p class="card-text mb-0">Happyness days count: @pet.HappynessDayCount</p>
-                                                @if (pet.IsAlive)
-                                                {
-                                                    <p class="card-text">Status: Alive</p>
-                                                    <a asp-controller="Farm" asp-action="Feed" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Feed</a>
-                                                    <a asp-controller="Farm" asp-action="GiveADrink" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Give a drink</a>
-                                                }
-                                                else
-                                                {
-                                                    <p class="card-text">Status: Dead</p>
-                                                }
-                                                <a asp-controller="Pet" asp-action="PetDetails" asp-route-farmId="@Model.FarmDetails.Id" asp-route-petId="@pet.Id" class="btn btn-primary">Details</a>
+                </div>
+                <div class="tab-pane fade " id="pills-create" role="tabpanel" aria-labelledby="pills-create-tab">
+                    <div class="container py-3">
+                        <div class="d-flex flex-column align-items-center ">
+                            <div class="card" style="width: 60rem; height: 40rem;">
+                                <div class="card-body">
+                                    <div class="row mb-3">
+                                        <form asp-controller="Farm" asp-action="CreatePet" asp-route-farmId="@Model.FarmDetails.Id" method="post">
+                                            <div class="col-sm-3">
+                                                <h6 class="mb-0">First Name</h6>
                                             </div>
-                                        </div>
+                                            <div class="col-sm-6 text-secondary">
+                                                <input type="text" class="form-control" asp-for="PetForCreation.Name" id="first-name">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-3">
+                                                    <h6 class="mb-0">Body</h6>
+
+                                                    <select asp-for="PetForCreation.Body" id="body-select" class="form-select" multiple aria-label="пример множественного выбора">
+                                                        <option selected>Выберите</option>
+                                                        <option value="1">Один</option>
+                                                        <option value="2">Два</option>
+                                                        <option value="3">Три</option>
+                                                        <option value="4">Четыре</option>
+                                                        <option value="5">Пять</option>
+                                                    </select>
+                                                    <h6 class="mb-0">Eyes</h6>
+
+                                                    <select asp-for="PetForCreation.Eye" id="eye-select" class="form-select" multiple aria-label="пример множественного выбора">
+                                                        <option selected>Выберите</option>
+                                                        <option value="1">Один</option>
+                                                        <option value="2">Два</option>
+                                                        <option value="3">Три</option>
+                                                        <option value="4">Четыре</option>
+                                                        <option value="5">Пять</option>
+                                                        <option value="6">Шесть</option>
+                                                    </select>
+                                                    <h6 class="mb-0">Nose</h6>
+
+                                                    <select asp-for="PetForCreation.Nose" id="nose-select" class="form-select" multiple aria-label="пример множественного выбора">
+                                                        <option selected>Выберите</option>
+                                                        <option value="1">Один</option>
+                                                        <option value="2">Два</option>
+                                                        <option value="3">Три</option>
+                                                        <option value="4">Четыре</option>
+                                                        <option value="5">Пять</option>
+                                                        <option value="6">Шесть</option>
+                                                    </select>
+                                                    <h6 class="mb-0">Mouth</h6>
+
+                                                    <select asp-for="PetForCreation.Mouth" id="mouth-select" class="form-select" multiple aria-label="пример множественного выбора">
+                                                        <option selected>Выберите</option>
+                                                        <option value="1">Один</option>
+                                                        <option value="2">Два</option>
+                                                        <option value="3">Три</option>
+                                                        <option value="4">Четыре</option>
+                                                        <option value="5">Пять</option>
+                                                    </select>
+                                                    <div class="col-sm-6 text-secondary">
+                                                        <input type="submit" class="btn btn-primary mt-3">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <div class="flex-column position-relative d-flex col mb-4">
+                                                        <img id="body" style="max-width: 90%" />
+                                                        <img id="eyes" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" />
+                                                        <img id="nose" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" />
+                                                        <img id="mouth" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+
                                     </div>
-                                }
+                                </div>
                             </div>
                         </div>
-                    }
-
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     </div>
-    @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
-    {
-        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-            <div class="container py-3">
-                <div class="d-flex flex-column align-items-center ">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="row">
-                                <form asp-controller="Farm" asp-action="InviteFriend" asp-route-farmId="@Model.FarmDetails.Id" method="post">
-                                    <div class="mb-3">
-                                        <label for="recipient-name" class="col-form-label">Friend's email:</label>
-                                        <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
-                                        <input type="submit" class="btn btn-primary mt-3">
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
 </div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -124,3 +212,5 @@
         </div>
     </div>
 </div>
+
+<script src="~/js/farmDetails.js" />

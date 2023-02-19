@@ -111,5 +111,16 @@ namespace InnoGotchi.MVC.Controllers
 
             return RedirectToAction("FarmDetails", new { farmId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePet(Guid farmId, FarmDetailsViewModel farmVM)
+        {
+            var jwt = Request.Cookies["jwt"];
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+
+            await _petService.CreatePetAsync(jwt, userId, farmId.ToString(), farmVM.PetForCreation);
+
+            return RedirectToAction("FarmDetails", new { farmId });
+        }
     }
 }

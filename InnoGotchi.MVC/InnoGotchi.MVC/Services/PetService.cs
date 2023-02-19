@@ -121,5 +121,23 @@ namespace InnoGotchi.MVC.Services
 
             return petPaging;
         }
+
+        public async Task CreatePetAsync(string jwt, string userId, string farmId, PetForCreationDto petDto)
+        {
+            var httpRequstMessage = new HttpRequestMessage()
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/pets"),
+                Headers =
+                {
+                    { HeaderNames.Accept, "application/json" },
+                    { HeaderNames.Authorization, $"Bearer {jwt}" }
+                },
+                Content = new StringContent(JsonConvert.SerializeObject(petDto), Encoding.UTF8, "application/json")
+            };
+
+            var httpClient = _httpClientFactory.CreateClient();
+            var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+        }
     }
 }
