@@ -40,23 +40,16 @@ namespace InnoGotchi.MVC.Controllers
 
             var farmDetails = await _farmService.GetFarmDetailsAsync(jwt, userId, farmId.ToString());
 
+            var farmStatistics = await _farmService.GetFarmStatisticsAsync(jwt, userId, farmId.ToString());
+
             var farmDetailVM = new FarmDetailsViewModel()
             {
                 FarmDetails = farmDetails,
-                FarmForUpdate = _mapper.Map<FarmForUpdateDto>(farmDetails)
+                FarmForUpdate = _mapper.Map<FarmForUpdateDto>(farmDetails),
+                FarmStatistics = farmStatistics
             };
 
             return View(farmDetailVM);
-        }
-
-        public async Task<IActionResult> FarmStatistics(Guid farmId)
-        {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
-
-            var farmStatistics = await _farmService.GetFarmStatisticsAsync(jwt, userId, farmId.ToString());
-
-            return View(farmStatistics);
         }
 
         public async Task<IActionResult> Feed(Guid farmId, Guid petId)

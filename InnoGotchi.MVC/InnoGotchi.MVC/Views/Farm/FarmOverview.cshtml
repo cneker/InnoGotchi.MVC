@@ -1,5 +1,9 @@
 ﻿@model InnoGotchi.MVC.ViewModels.FarmViewModel
 
+@{
+    ViewData["Title"] = "Farm overview";
+}
+
 <link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
 
 <ul class="nav nav-pills nav-justified mb-3" id="pills-tab" role="tablist">
@@ -38,7 +42,6 @@
                         <h5 class="card-title">@Model.FarmOverview.Name</h5>
                         <p class="card-text">Pets count: @Model.FarmOverview.PetsCount</p>
                         <a asp-controller="Farm" asp-action="FarmDetails" asp-route-farmId="@Model.FarmOverview.Id" class="btn btn-primary">Details</a>
-                        <a asp-controller="Farm" asp-action="FarmStatistics" asp-route-farmId="@Model.FarmOverview.Id" class="btn btn-primary">Statistics</a>
                     </div>
                 </div>
             </div>           
@@ -69,7 +72,6 @@
                             <h5 class="card-title">@farm.Name</h5>
                             <p class="card-text">Pets count: @farm.PetsCount</p>
                             <a asp-controller="Farm" asp-action="FarmDetails" asp-route-farmId="@farm.Id" class="btn btn-primary">Details</a>
-                            <a asp-controller="Farm" asp-action="FarmStatistics" asp-route-farmId="@farm.Id" class="btn btn-primary">Statistics</a>
                         </div>
                     </div>
                 </div>

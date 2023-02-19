@@ -1,5 +1,9 @@
 ﻿@model InnoGotchi.MVC.ViewModels.FarmDetailsViewModel
 
+@{
+    ViewData["Title"] = "Farm details";
+}
+
 <link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
 <div class="align-items-start">
     <div class="row">
@@ -9,6 +13,9 @@
                 <ul class="flex-column nav nav-pills mb-3 nav-justified" id="pills-tab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">My farm</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-statistics-tab" data-bs-toggle="pill" data-bs-target="#pills-statistics" type="button" role="tab" aria-controls="pills-statistics" aria-selected="false">Statistics</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Invite a friend</button>
@@ -31,8 +38,8 @@
                                             @Model.FarmDetails.Name
                                             @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
                                             {
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                    Update
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" value="Change">
+                                                    Change
                                                 </button>
                                             }
                                         </h5>
@@ -87,6 +94,28 @@
             </div>
             @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
             {
+                <div class="tab-pane fade" id="pills-statistics" role="tabpanel" aria-labelledby="pills-statistics-tab">
+                    <div class="container py-3">
+                        <div class="d-flex flex-column align-items-center ">
+                            <div class="card" style="width: 30rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">@Model.FarmStatistics.Name</h5>
+                                    <p class="card-text mb-0" id="alive-pets">Alive pets count: @Model.FarmStatistics.AlivePetsCount</p>
+                                    <p class="card-text" id="dead-pets">Dead pets count: @Model.FarmStatistics.DeadPetsCount</p>
+                                    <div class="col-lg-10">
+                                        <canvas id="pieChart6" data-alive="@Model.FarmStatistics.AlivePetsCount" data-dead="@Model.FarmStatistics.DeadPetsCount"></canvas>
+                                    </div>
+                                    <p class="card-text mb-0">Average feeding period: @Model.FarmStatistics.AverageFeedingPeriod</p>
+                                    <p class="card-text mb-0">Average thirst quenching period: @Model.FarmStatistics.AverageThirstQuenchingPeriod</p>
+                                    <p class="card-text mb-0">Average pet's happiness days count: @Model.FarmStatistics.AveragePetsHappinessDaysCount</p>
+                                    <p class="card-text">Average pet's age: @Model.FarmStatistics.AveragePetsAge</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
                 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                     <div class="container py-3">
                         <div class="d-flex flex-column align-items-center ">
@@ -97,7 +126,7 @@
                                             <div class="mb-3">
                                                 <label for="recipient-name" class="col-form-label">Friend's email:</label>
                                                 <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
-                                                <input type="submit" class="btn btn-primary mt-3">
+                                                <input type="submit" class="btn btn-primary mt-3" value="Invite">
                                             </div>
                                         </form>
                                     </div>
@@ -109,76 +138,70 @@
                 <div class="tab-pane fade " id="pills-create" role="tabpanel" aria-labelledby="pills-create-tab">
                     <div class="container py-3">
                         <div class="d-flex flex-column align-items-center ">
-                            <div class="card" style="width: 60rem; height: 40rem;">
+                            <div class="card" style="width: 60rem; height: 36rem;">
                                 <div class="card-body">
                                     <div class="row mb-3">
                                         <form asp-controller="Farm" asp-action="CreatePet" asp-route-farmId="@Model.FarmDetails.Id" method="post">
                                             <div class="col-sm-3">
-                                                <h6 class="mb-0">First Name</h6>
+                                                <h6 class="mb-1">Name</h6>
                                             </div>
-                                            <div class="col-sm-6 text-secondary">
+                                            <div class="col-sm-3 text-secondary mb-2">
                                                 <input type="text" class="form-control" asp-for="PetForCreation.Name" id="first-name">
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-3">
                                                     <h6 class="mb-0">Body</h6>
-
-                                                    <select asp-for="PetForCreation.Body" id="body-select" class="form-select" multiple aria-label="пример множественного выбора">
-                                                        <option selected>Выберите</option>
-                                                        <option value="1">Один</option>
-                                                        <option value="2">Два</option>
-                                                        <option value="3">Три</option>
-                                                        <option value="4">Четыре</option>
-                                                        <option value="5">Пять</option>
+                                                    <select asp-for="PetForCreation.Body" id="body-select" class="form-select mb-2">
+                                                        <option selected value="0">Select</option>
+                                                        <option value="1">Frog</option>
+                                                        <option value="2">Ball</option>
+                                                        <option value="3">StickMan</option>
+                                                        <option value="4">Human</option>
+                                                        <option value="5">Dinosaur</option>
                                                     </select>
                                                     <h6 class="mb-0">Eyes</h6>
-
-                                                    <select asp-for="PetForCreation.Eye" id="eye-select" class="form-select" multiple aria-label="пример множественного выбора">
-                                                        <option selected>Выберите</option>
-                                                        <option value="1">Один</option>
-                                                        <option value="2">Два</option>
-                                                        <option value="3">Три</option>
-                                                        <option value="4">Четыре</option>
-                                                        <option value="5">Пять</option>
-                                                        <option value="6">Шесть</option>
+                                                    <select asp-for="PetForCreation.Eye" id="eye-select" class="form-select mb-2">
+                                                        <option selected value="0">Select</option>
+                                                        <option value="1">Common</option>
+                                                        <option value="2">CinemaGlasses</option>
+                                                        <option value="3">Mesh</option>
+                                                        <option value="4">Single</option>
+                                                        <option value="5">BlackGlasses</option>
+                                                        <option value="6">PinkGlasses</option>
                                                     </select>
                                                     <h6 class="mb-0">Nose</h6>
-
-                                                    <select asp-for="PetForCreation.Nose" id="nose-select" class="form-select" multiple aria-label="пример множественного выбора">
-                                                        <option selected>Выберите</option>
-                                                        <option value="1">Один</option>
-                                                        <option value="2">Два</option>
-                                                        <option value="3">Три</option>
-                                                        <option value="4">Четыре</option>
-                                                        <option value="5">Пять</option>
-                                                        <option value="6">Шесть</option>
+                                                    <select asp-for="PetForCreation.Nose" id="nose-select" class="form-select mb-2">
+                                                        <option selected value="0">Select</option>
+                                                        <option value="1">Duck</option>
+                                                        <option value="2">Cow</option>
+                                                        <option value="3">Pig</option>
+                                                        <option value="4">Common</option>
+                                                        <option value="5">Dimond</option>
+                                                        <option value="6">Bull</option>
                                                     </select>
                                                     <h6 class="mb-0">Mouth</h6>
-
-                                                    <select asp-for="PetForCreation.Mouth" id="mouth-select" class="form-select" multiple aria-label="пример множественного выбора">
-                                                        <option selected>Выберите</option>
-                                                        <option value="1">Один</option>
-                                                        <option value="2">Два</option>
-                                                        <option value="3">Три</option>
-                                                        <option value="4">Четыре</option>
-                                                        <option value="5">Пять</option>
+                                                    <select asp-for="PetForCreation.Mouth" id="mouth-select" class="form-select mb-2">
+                                                        <option selected value="0">Select</option>
+                                                        <option value="1">Vampire</option>
+                                                        <option value="2">SpanchBob</option>
+                                                        <option value="3">Tongue</option>
+                                                        <option value="4">Common</option>
+                                                        <option value="5">Tooth</option>
                                                     </select>
                                                     <div class="col-sm-6 text-secondary">
-                                                        <input type="submit" class="btn btn-primary mt-3">
+                                                        <input type="submit" class="btn btn-primary mt-3" value="Create">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-9">
                                                     <div class="flex-column position-relative d-flex col mb-4">
-                                                        <img id="body" style="max-width: 90%" />
+                                                        <img id="body" />
                                                         <img id="eyes" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" />
                                                         <img id="nose" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" />
                                                         <img id="mouth" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" />
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </form>
-
                                     </div>
                                 </div>
                             </div>
@@ -194,7 +217,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create your own farm</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Change farm name</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form asp-controller="Farm" asp-action="UpdateFarm" asp-route-farmId="@Model.FarmDetails.Id" method="post">
@@ -206,11 +229,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <input type="submit" class="btn btn-primary" value="Update" />
+                    <input type="submit" class="btn btn-primary" value="Change" />
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-<script src="~/js/farmDetails.js" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="~/js/chart.js" ></script>
+<script src="~/js/farmDetails.js"></script>

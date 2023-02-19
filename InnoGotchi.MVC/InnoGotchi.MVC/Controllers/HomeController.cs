@@ -24,11 +24,6 @@ namespace InnoGotchi.MVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         public async Task<IActionResult> AllInnoGotchi(int pageNumber, int orderBy, int pageSize)
         {
             var jwt = Request.Cookies["jwt"];
@@ -64,7 +59,7 @@ namespace InnoGotchi.MVC.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> SetupQueryParameters(AllPetsViewModel allPetsVM)
+        public IActionResult SetupQueryParameters(AllPetsViewModel allPetsVM)
         {
             var pageNumber = allPetsVM.RequestParameters.CurrentPage;
             var pageSize = allPetsVM.RequestParameters.PageSize;
