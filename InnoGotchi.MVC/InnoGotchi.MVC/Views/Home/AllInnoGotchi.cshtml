@@ -23,7 +23,7 @@
                                     <option value="4">Thirsty level</option>
                                 </select>
                                 <p class="card-text mb-0">Pets count:</p>
-                                <input type="number" min="1" max="15" class="form-control mb-3" id="recipient-name" asp-for="RequestParameters.PageSize"/>
+                                <input type="number" min="1" max="15" class="form-control mb-3" id="recipient-name" asp-for="RequestParameters.PageSize" required/>
                                 <input type="hidden" asp-for="RequestParameters.CurrentPage"/>
                                 <input type="submit" class="btn btn-primary" value="Update"/>
                             </form>
@@ -131,4 +131,4 @@
     </nav>
 </div>
 
-<script src="~/js/allInnoGotchi.js" />
+<script src="~/js/allInnoGotchi.js"></script>

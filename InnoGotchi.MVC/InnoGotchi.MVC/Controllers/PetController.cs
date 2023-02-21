@@ -22,7 +22,7 @@ namespace InnoGotchi.MVC.Controllers
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            var pet = await _petService.GetPetDetailsAsync(jwt, userId, farmId.ToString(), petId.ToString());
+            var pet = await _petService.GetPetDetailsAsync(jwt, userId, farmId, petId);
 
             var petDetailsVM = new PetDetailsViewModel
             {
@@ -39,7 +39,7 @@ namespace InnoGotchi.MVC.Controllers
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            await _petService.FeedAsync(jwt, userId, farmId.ToString(), petId.ToString());
+            await _petService.FeedAsync(jwt, userId, farmId, petId);
 
             return RedirectToAction("PetDetails", new { farmId, petId });
         }
@@ -49,7 +49,7 @@ namespace InnoGotchi.MVC.Controllers
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            await _petService.GiveADrinkAsync(jwt, userId, farmId.ToString(), petId.ToString());
+            await _petService.GiveADrinkAsync(jwt, userId, farmId, petId);
 
             return RedirectToAction("PetDetails", new { farmId, petId });
         }
@@ -59,7 +59,7 @@ namespace InnoGotchi.MVC.Controllers
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
-            await _petService.UpdatePetAsync(jwt, userId, farmId.ToString(), petId.ToString(), petVM.PetForUpdate);
+            await _petService.UpdatePetAsync(jwt, userId, farmId, petId, petVM.PetForUpdate);
 
             return RedirectToAction("PetDetails", new { farmId, petId });
         }

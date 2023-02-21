@@ -7,6 +7,5 @@ namespace InnoGotchi.MVC.Contracts.Services
     {
         Task<UserForAuthenticationDto> RegisterUserAsync(UserForRegistrationDto userForReg);
         Task<AccessTokenDto> SignInAsync(UserForAuthenticationDto userForAuth);
-        Task<UserInfoForLayoutDto> GetUserForLayoutAsync(string jwt, string id);
     }
 }

@@ -31,7 +31,7 @@
 									<h6 class="mb-0">First Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" id="first-name" asp-for="UserInfoForUpdate.FirstName">
+									<input type="text" class="form-control" id="first-name" asp-for="UserInfoForUpdate.FirstName" required maxlength="30">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -39,7 +39,7 @@
 									<h6 class="mb-0">Second Name</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" id="second-name" asp-for="UserInfoForUpdate.LastName">
+									<input type="text" class="form-control" id="second-name" asp-for="UserInfoForUpdate.LastName" required maxlength="30">
 								</div>
 							</div>
 							<div class="row">
@@ -61,7 +61,7 @@
 										<h6 class="mb-0">Old Password</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input type="password" class="form-control" id="old-password" asp-for="PasswordChanging.OldPassword">
+										<input type="password" class="form-control" id="old-password" asp-for="PasswordChanging.OldPassword" required minlength="5" maxlength="30">
 									</div>
 								</div>
 								<div class="row mb-3">
@@ -69,7 +69,7 @@
 										<h6 class="mb-0">New Password</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input type="password" class="form-control" id="new-password" asp-for="PasswordChanging.NewPassword">
+										<input type="password" class="form-control" id="new-password" asp-for="PasswordChanging.NewPassword" required minlength="5" maxlength="30">
 									</div>
 								</div>
 								<div class="row mb-3">
@@ -77,7 +77,7 @@
 										<h6 class="mb-0">Confirm Password</h6>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input type="password" class="form-control" id="new-password-confirm" asp-for="PasswordChanging.ConfirmedPassword">
+										<input type="password" class="form-control" id="new-password-confirm" asp-for="PasswordChanging.ConfirmedPassword" required minlength="5" maxlength="30">
 									</div>
 								</div>
 								<div class="row">
@@ -100,7 +100,7 @@
 										<h5 class="mb-0">Update Avatar</h5>
 									</div>
 									<div class="col-sm-9 text-secondary">
-										<input class="form-control" type="file" asp-for="Avatar" accept="image/*" id="formFile">
+										<input class="form-control" type="file" asp-for="Avatar" accept="image/*" id="formFile" required>
 									</div>
 								</div>
 								<div class="row">

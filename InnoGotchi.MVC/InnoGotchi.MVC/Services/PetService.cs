@@ -16,7 +16,7 @@ namespace InnoGotchi.MVC.Services
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task FeedAsync(string jwt, string userId, string farmId, string petId)
+        public async Task FeedAsync(string jwt, string userId, Guid farmId, Guid petId)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {
@@ -33,7 +33,7 @@ namespace InnoGotchi.MVC.Services
             await httpClient.SendAsync(httpRequstMessage);
         }
 
-        public async Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, string farmId, string petId)
+        public async Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, Guid farmId, Guid petId)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {
@@ -56,7 +56,7 @@ namespace InnoGotchi.MVC.Services
             return farm;
         }
 
-        public async Task GiveADrinkAsync(string jwt, string userId, string farmId, string petId)
+        public async Task GiveADrinkAsync(string jwt, string userId, Guid farmId, Guid petId)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {
@@ -73,7 +73,7 @@ namespace InnoGotchi.MVC.Services
             await httpClient.SendAsync(httpRequstMessage);
         }
 
-        public async Task UpdatePetAsync(string jwt, string userId, string farmId, string petId, PetForUpdateDto petDto)
+        public async Task UpdatePetAsync(string jwt, string userId, Guid farmId, Guid petId, PetForUpdateDto petDto)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {
@@ -91,7 +91,7 @@ namespace InnoGotchi.MVC.Services
             await httpClient.SendAsync(httpRequstMessage);
         }
 
-        public async Task<PetPagingDto> GetPetsAsync(string jwt, string pageNumber, string orderBy, string pageSize)
+        public async Task<PetPagingDto> GetPetsAsync(string jwt, int pageNumber, string orderBy, int pageSize)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {
@@ -122,7 +122,7 @@ namespace InnoGotchi.MVC.Services
             return petPaging;
         }
 
-        public async Task CreatePetAsync(string jwt, string userId, string farmId, PetForCreationDto petDto)
+        public async Task CreatePetAsync(string jwt, string userId, Guid farmId, PetForCreationDto petDto)
         {
             var httpRequstMessage = new HttpRequestMessage()
             {

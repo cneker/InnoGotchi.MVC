@@ -55,7 +55,8 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                return null;
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
             var farmOverview = JsonConvert.DeserializeObject<FarmOverviewDto>(jsonContent);
@@ -87,7 +88,7 @@ namespace InnoGotchi.MVC.Services
             return farmOverview;
         }
 
-        public async Task<FarmStatisticsDto> GetFarmStatisticsAsync(string jwt, string userId, string farmId)
+        public async Task<FarmStatisticsDto> GetFarmStatisticsAsync(string jwt, string userId, Guid farmId)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -110,7 +111,7 @@ namespace InnoGotchi.MVC.Services
             return farmStatistics;
         }
 
-        public async Task<FarmDetailsDto> GetFarmDetailsAsync(string jwt, string userId, string farmId)
+        public async Task<FarmDetailsDto> GetFarmDetailsAsync(string jwt, string userId, Guid farmId)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -133,7 +134,7 @@ namespace InnoGotchi.MVC.Services
             return farmDetails;
         }
 
-        public async Task InviteFriendAsync(string jwt, string userId, string farmId, UserForInvitingDto userDto)
+        public async Task InviteFriendAsync(string jwt, string userId, Guid farmId, UserForInvitingDto userDto)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -153,7 +154,7 @@ namespace InnoGotchi.MVC.Services
             await httpResponseMessage.Content.ReadAsStringAsync();
         }
 
-        public async Task UpdateFarmAsync(string jwt, string userId, string farmId, FarmForUpdateDto farmDto)
+        public async Task UpdateFarmAsync(string jwt, string userId, Guid farmId, FarmForUpdateDto farmDto)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {

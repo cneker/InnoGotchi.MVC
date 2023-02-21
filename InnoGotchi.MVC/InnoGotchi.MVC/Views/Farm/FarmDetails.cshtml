@@ -105,8 +105,8 @@
                                     <div class="col-lg-10">
                                         <canvas id="pieChart6" data-alive="@Model.FarmStatistics.AlivePetsCount" data-dead="@Model.FarmStatistics.DeadPetsCount"></canvas>
                                     </div>
-                                    <p class="card-text mb-0">Average feeding period: @Model.FarmStatistics.AverageFeedingPeriod</p>
-                                    <p class="card-text mb-0">Average thirst quenching period: @Model.FarmStatistics.AverageThirstQuenchingPeriod</p>
+                                    <p class="card-text mb-0">Average feeding period: @Model.FarmStatistics.AverageFeedingPeriod days</p>
+                                    <p class="card-text mb-0">Average thirst quenching period: @Model.FarmStatistics.AverageThirstQuenchingPeriod days</p>
                                     <p class="card-text mb-0">Average pet's happiness days count: @Model.FarmStatistics.AveragePetsHappinessDaysCount</p>
                                     <p class="card-text">Average pet's age: @Model.FarmStatistics.AveragePetsAge</p>
                                 </div>
@@ -125,7 +125,7 @@
                                         <form asp-controller="Farm" asp-action="InviteFriend" asp-route-farmId="@Model.FarmDetails.Id" method="post">
                                             <div class="mb-3">
                                                 <label for="recipient-name" class="col-form-label">Friend's email:</label>
-                                                <input type="text" class="form-control" asp-for="UserForInviting.Email" id="recipient-name">
+                                                <input type="email" class="form-control" asp-for="UserForInviting.Email" id="recipient-name" required>
                                                 <input type="submit" class="btn btn-primary mt-3" value="Invite">
                                             </div>
                                         </form>
@@ -146,13 +146,13 @@
                                                 <h6 class="mb-1">Name</h6>
                                             </div>
                                             <div class="col-sm-3 text-secondary mb-2">
-                                                <input type="text" class="form-control" asp-for="PetForCreation.Name" id="first-name">
+                                                <input type="text" class="form-control" asp-for="PetForCreation.Name" id="first-name" required maxlength="20">
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-3">
                                                     <h6 class="mb-0">Body</h6>
-                                                    <select asp-for="PetForCreation.Body" id="body-select" class="form-select mb-2">
-                                                        <option selected value="0">Select</option>
+                                                    <select asp-for="PetForCreation.Body" id="body-select" class="form-select mb-2" required>
+                                                        <option value="">Select</option>
                                                         <option value="1">Frog</option>
                                                         <option value="2">Ball</option>
                                                         <option value="3">StickMan</option>
@@ -160,8 +160,8 @@
                                                         <option value="5">Dinosaur</option>
                                                     </select>
                                                     <h6 class="mb-0">Eyes</h6>
-                                                    <select asp-for="PetForCreation.Eye" id="eye-select" class="form-select mb-2">
-                                                        <option selected value="0">Select</option>
+                                                    <select asp-for="PetForCreation.Eye" id="eye-select" class="form-select mb-2" required>
+                                                        <option value="">Select</option>
                                                         <option value="1">Common</option>
                                                         <option value="2">CinemaGlasses</option>
                                                         <option value="3">Mesh</option>
@@ -170,8 +170,8 @@
                                                         <option value="6">PinkGlasses</option>
                                                     </select>
                                                     <h6 class="mb-0">Nose</h6>
-                                                    <select asp-for="PetForCreation.Nose" id="nose-select" class="form-select mb-2">
-                                                        <option selected value="0">Select</option>
+                                                    <select asp-for="PetForCreation.Nose" id="nose-select" class="form-select mb-2" required>
+                                                        <option value="">Select</option>
                                                         <option value="1">Duck</option>
                                                         <option value="2">Cow</option>
                                                         <option value="3">Pig</option>
@@ -180,8 +180,8 @@
                                                         <option value="6">Bull</option>
                                                     </select>
                                                     <h6 class="mb-0">Mouth</h6>
-                                                    <select asp-for="PetForCreation.Mouth" id="mouth-select" class="form-select mb-2">
-                                                        <option selected value="0">Select</option>
+                                                    <select asp-for="PetForCreation.Mouth" id="mouth-select" class="form-select mb-2" required>
+                                                        <option value="">Select</option>
                                                         <option value="1">Vampire</option>
                                                         <option value="2">SpanchBob</option>
                                                         <option value="3">Tongue</option>
@@ -224,7 +224,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Name:</label>
-                        <input type="text" class="form-control" asp-for="FarmForUpdate.Name" id="recipient-name">
+                        <input type="text" class="form-control" asp-for="FarmForUpdate.Name" id="recipient-name" required maxlength="20">
                     </div>
                 </div>
                 <div class="modal-footer">

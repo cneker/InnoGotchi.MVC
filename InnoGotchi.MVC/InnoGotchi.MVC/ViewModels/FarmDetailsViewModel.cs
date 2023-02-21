@@ -11,10 +11,5 @@ namespace InnoGotchi.MVC.ViewModels
         public FarmForUpdateDto FarmForUpdate { get; set; }
         public PetForCreationDto PetForCreation { get; set; }
         public FarmStatisticsDto FarmStatistics { get; set; }
-        public FarmDetailsViewModel()
-        {
-            UserForInviting= new UserForInvitingDto();
-            PetForCreation = new PetForCreationDto();
-        }
     }
 }

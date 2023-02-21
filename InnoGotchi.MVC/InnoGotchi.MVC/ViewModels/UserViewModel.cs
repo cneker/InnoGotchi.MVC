@@ -8,10 +8,5 @@ namespace InnoGotchi.MVC.ViewModels
         public UserInfoForUpdateDto UserInfoForUpdate { get; set; }
         public PasswordChangingDto PasswordChanging { get; set; }
         public IFormFile Avatar { get; set; }
-
-        public UserViewModel()
-        {
-            PasswordChanging= new PasswordChangingDto();
-        }
     }
 }

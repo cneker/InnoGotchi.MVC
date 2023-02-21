@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.User;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +9,17 @@ namespace InnoGotchi.MVC.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IAuthenticationService _authenticationService;
-        public AuthenticationController(IMapper mapper, IAuthenticationService authenticationService)
+        private readonly IUserService _userService;
+        private readonly IValidator<UserForRegistrationDto> _userForRegvalidator;
+
+        public AuthenticationController(IAuthenticationService authenticationService,
+            IValidator<UserForRegistrationDto> userForRegvalidator,
+            IUserService userService)
         {
-            _mapper = mapper;
             _authenticationService = authenticationService;
+            _userForRegvalidator = userForRegvalidator;
+            _userService = userService;
         }
 
         public IActionResult SignIn()
@@ -28,22 +35,28 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Registration(UserForRegistrationDto userForReg)
         {
+            var result = await _userForRegvalidator.ValidateAsync(userForReg);
+            if (!result.IsValid)
+            {
+                result.AddToModelState(ModelState);
+                return View(userForReg);
+            }
             var userForAuth = await _authenticationService.RegisterUserAsync(userForReg);
 
             return View("~/Views/Authentication/SignIn.cshtml", userForAuth);
         }
 
-        [HttpPost]  
+        [HttpPost]
         public async Task<IActionResult> SignIn(UserForAuthenticationDto userForAuth)
         {
             var token = await _authenticationService.SignInAsync(userForAuth);
 
             Response.Cookies.Append("jwt", token.AccessToken);
 
-            var userForLayout = await _authenticationService.GetUserForLayoutAsync(token.AccessToken, token.UserId.ToString());
+            var user = await _userService.GetUserInfoDtoAsync(token.AccessToken, token.UserId.ToString());
 
-            Response.Cookies.Append("name", userForLayout.FirstName);
-            Response.Cookies.Append("avatar", userForLayout.AvatarPath);
+            Response.Cookies.Append("name", user.FirstName);
+            Response.Cookies.Append("avatar", user.AvatarPath);
 
             return RedirectToAction("FarmOverview", "Farm");
         }

@@ -1,4 +1,5 @@
-﻿using InnoGotchi.MVC.Contracts.Services;
+﻿using AutoMapper;
+using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models;
 using InnoGotchi.MVC.Models.User;
 using Microsoft.Net.Http.Headers;
@@ -10,32 +11,12 @@ namespace InnoGotchi.MVC.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IMapper _mapper;
 
-        public AuthenticationService(IHttpClientFactory httpClientFactory)
+        public AuthenticationService(IHttpClientFactory httpClientFactory, IMapper mapper)
         {
             _httpClientFactory = httpClientFactory;
-        }
-
-        public async Task<UserInfoForLayoutDto> GetUserForLayoutAsync(string jwt, string id)
-        {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{id}/layout"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var userForLayout = JsonConvert.DeserializeObject<UserInfoForLayoutDto>(jsonContent);
-            return userForLayout;
+            _mapper = mapper;
         }
 
         public async Task<UserForAuthenticationDto> RegisterUserAsync(UserForRegistrationDto userForReg)
@@ -55,10 +36,10 @@ namespace InnoGotchi.MVC.Services
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
-            using var contentStream = await httpResponseMessage.Content.ReadAsStreamAsync();
-            var userEmail = new StreamReader(contentStream).ReadLine();
+            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserInfoDto>(jsonContent);
 
-            var userForAuth = new UserForAuthenticationDto { Email = userEmail };
+            var userForAuth = _mapper.Map<UserForAuthenticationDto>(user);
             return userForAuth;
         }
 
@@ -80,8 +61,8 @@ namespace InnoGotchi.MVC.Services
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
             var token = JsonConvert.DeserializeObject<AccessTokenDto>(jsonContent);
+
             return token;
         }
     }

@@ -37,7 +37,7 @@ namespace InnoGotchi.MVC.Controllers
                 _ => "happynessdaycount"
             };
 
-            var petPaging = await _petService.GetPetsAsync(jwt, pageNumber.ToString(), orderByString, pageSize.ToString());
+            var petPaging = await _petService.GetPetsAsync(jwt, pageNumber, orderByString, pageSize);
 
             var allPetsVM = new AllPetsViewModel
             {

@@ -4,11 +4,11 @@ namespace InnoGotchi.MVC.Contracts.Services
 {
     public interface IPetService
     {
-        Task FeedAsync(string jwt, string userId, string farmId, string petId);
-        Task GiveADrinkAsync(string jwt, string userId, string farmId, string petId);
-        Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, string farmId, string petId);
-        Task UpdatePetAsync(string jwt, string userId, string farmId, string petId, PetForUpdateDto petDto);
-        Task<PetPagingDto> GetPetsAsync(string jwt, string pageNumber, string orderBy, string pageSize);
-        Task CreatePetAsync(string jwt, string userId, string farmId, PetForCreationDto petDto);
+        Task FeedAsync(string jwt, string userId, Guid farmId, Guid petId);
+        Task GiveADrinkAsync(string jwt, string userId, Guid farmId, Guid petId);
+        Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, Guid farmId, Guid petId);
+        Task UpdatePetAsync(string jwt, string userId, Guid farmId, Guid petId, PetForUpdateDto petDto);
+        Task<PetPagingDto> GetPetsAsync(string jwt, int pageNumber, string orderBy, int pageSize);
+        Task CreatePetAsync(string jwt, string userId, Guid farmId, PetForCreationDto petDto);
     }
 }
