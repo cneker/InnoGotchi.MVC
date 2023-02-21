@@ -19,7 +19,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public IActionResult Index()
         {
-            if(User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
                 return RedirectToAction("FarmOverview", "Farm");
             return View();
         }

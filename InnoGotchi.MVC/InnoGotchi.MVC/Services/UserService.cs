@@ -1,11 +1,9 @@
 ﻿using InnoGotchi.MVC.Contracts.Helpers;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.User;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 
 namespace InnoGotchi.MVC.Services
@@ -97,7 +95,7 @@ namespace InnoGotchi.MVC.Services
         {
             var base64Image = _convertHelper.ConvertFromImageToBase64(file);
             var avatarDto = new AvatarChangingDto
-            { 
+            {
                 Base64Image = base64Image,
                 FileName = file.FileName
             };

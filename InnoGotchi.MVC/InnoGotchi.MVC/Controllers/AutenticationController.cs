@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.User;
@@ -55,7 +54,7 @@ namespace InnoGotchi.MVC.Controllers
         {
             var token = await _authenticationService.SignInAsync(userForAuth, ModelState);
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(userForAuth);
             }

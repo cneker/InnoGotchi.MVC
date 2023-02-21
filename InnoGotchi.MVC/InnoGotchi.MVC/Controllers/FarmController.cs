@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using FluentValidation.AspNetCore;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Farm;
-using InnoGotchi.MVC.Models.User;
-using InnoGotchi.MVC.Services;
 using InnoGotchi.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 

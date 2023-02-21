@@ -25,7 +25,7 @@ namespace InnoGotchi.MVC.Controllers
             var userDto = await _userService.GetUserInfoDtoAsync(jwt, id);
 
             var userViewModel = new UserViewModel()
-            { 
+            {
                 UserInfo = userDto,
                 UserInfoForUpdate = _mapper.Map<UserInfoForUpdateDto>(userDto)
             };

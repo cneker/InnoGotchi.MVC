@@ -1,5 +1,4 @@
 ﻿using InnoGotchi.MVC.Models.Pet;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InnoGotchi.MVC.Contracts.Services
 {

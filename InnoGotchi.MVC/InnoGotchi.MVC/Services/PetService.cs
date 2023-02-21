@@ -1,7 +1,6 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Pet;
 using InnoGotchi.MVC.RequestFeatures;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using System.Net;

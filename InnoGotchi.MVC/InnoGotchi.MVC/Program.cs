@@ -1,6 +1,5 @@
 using InnoGotchi.MVC.Extensions;
 using InnoGotchi.MVC.Middlewares;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
