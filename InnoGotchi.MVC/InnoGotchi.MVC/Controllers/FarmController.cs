@@ -29,7 +29,7 @@ namespace InnoGotchi.MVC.Controllers
             var userId = User.Claims.First(c => c.Type == "Id").Value;
 
             var farmDto = await _farmService.GetUserFarmOverviewAsync(jwt, userId);
-
+            Response.Cookies.Append("my-farm-id", farmDto == null ? "" : farmDto.Id.ToString());
             var farms = await _farmService.GetFriendsFramsAsync(jwt, userId);
 
             return View(new FarmViewModel { FarmOverview = farmDto, FriendsFarms = farms });

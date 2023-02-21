@@ -41,7 +41,11 @@ namespace InnoGotchi.MVC.Controllers
                 result.AddToModelState(ModelState);
                 return View(userForReg);
             }
-            var userForAuth = await _authenticationService.RegisterUserAsync(userForReg);
+            var userForAuth = await _authenticationService.RegisterUserAsync(userForReg, ModelState);
+            if (!ModelState.IsValid)
+            {
+                return View(userForReg);
+            }
 
             return View("~/Views/Authentication/SignIn.cshtml", userForAuth);
         }
@@ -49,7 +53,12 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SignIn(UserForAuthenticationDto userForAuth)
         {
-            var token = await _authenticationService.SignInAsync(userForAuth);
+            var token = await _authenticationService.SignInAsync(userForAuth, ModelState);
+
+            if(!ModelState.IsValid)
+            {
+                return View(userForAuth);
+            }
 
             Response.Cookies.Append("jwt", token.AccessToken);
 

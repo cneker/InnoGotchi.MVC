@@ -23,7 +23,7 @@
                         <div class="row mb-3">
                             <h5 class="card-title">
                                 @Model.PetDetails.Name
-                                @if (Model.PetDetails.IsAlive)
+                                @if (Model.PetDetails.IsAlive && Model.FarmId.ToString() == Context.Request.Cookies["my-farm-id"])
                                 {
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                         Change

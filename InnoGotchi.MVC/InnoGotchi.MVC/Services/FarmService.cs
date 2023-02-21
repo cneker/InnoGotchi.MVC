@@ -1,8 +1,10 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.Models.User;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -32,6 +34,10 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+               throw new Exception("Something went wrong");
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
@@ -56,7 +62,11 @@ namespace InnoGotchi.MVC.Services
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
             if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if(httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
                 return null;
+            }
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
             var farmOverview = JsonConvert.DeserializeObject<FarmOverviewDto>(jsonContent);
@@ -80,6 +90,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
@@ -103,6 +118,10 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception("Something went wrong");
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
@@ -126,6 +145,13 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if(httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                    throw new Exception("You are not the owner or collaborator of this farm");
+                else
+                    throw new Exception("Something went wrong");
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
@@ -150,6 +176,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
 
             await httpResponseMessage.Content.ReadAsStringAsync();
         }
@@ -170,6 +201,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
 
             await httpResponseMessage.Content.ReadAsStringAsync();
         }

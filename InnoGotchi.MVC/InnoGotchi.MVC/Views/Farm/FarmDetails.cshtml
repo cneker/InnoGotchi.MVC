@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
 <div class="align-items-start">
     <div class="row">
-        @if (Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
+        @if (Context.Request.Cookies["my-farm-id"] != null && Model.FarmDetails.Id.ToString() == Context.Request.Cookies["my-farm-id"])
         {
             <div class="col-lg-2">
                 <ul class="flex-column nav nav-pills mb-3 nav-justified" id="pills-tab" role="tablist">

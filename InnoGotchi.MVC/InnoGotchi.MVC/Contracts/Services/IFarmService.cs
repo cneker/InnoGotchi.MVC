@@ -1,5 +1,6 @@
 ﻿using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.Models.User;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace InnoGotchi.MVC.Contracts.Services
 {

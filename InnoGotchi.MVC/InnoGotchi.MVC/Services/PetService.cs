@@ -1,8 +1,10 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Pet;
 using InnoGotchi.MVC.RequestFeatures;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace InnoGotchi.MVC.Services
@@ -30,7 +32,14 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequstMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                    throw new Exception("You are not the owner or collaborator of this farm");
+                else
+                    throw new Exception("Something went wrong");
+            }
         }
 
         public async Task<PetDetailsDto> GetPetDetailsAsync(string jwt, string userId, Guid farmId, Guid petId)
@@ -48,7 +57,13 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
-
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                    throw new Exception("You are not the owner or collaborator of this farm");
+                else
+                    throw new Exception("Something went wrong");
+            }
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
             var farm = JsonConvert.DeserializeObject<PetDetailsDto>(jsonContent);
@@ -70,7 +85,14 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequstMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                    throw new Exception("You are not the owner or collaborator of this farm");
+                else
+                    throw new Exception("Something went wrong");
+            }
         }
 
         public async Task UpdatePetAsync(string jwt, string userId, Guid farmId, Guid petId, PetForUpdateDto petDto)
@@ -88,7 +110,12 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequstMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
         }
 
         public async Task<PetPagingDto> GetPetsAsync(string jwt, int pageNumber, string orderBy, int pageSize)
@@ -106,7 +133,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
-
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
             var pets = JsonConvert.DeserializeObject<IEnumerable<PetDetailsDto>>(jsonContent);
@@ -138,6 +169,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequstMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
         }
     }
 }

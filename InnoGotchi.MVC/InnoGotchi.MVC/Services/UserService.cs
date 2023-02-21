@@ -4,6 +4,7 @@ using InnoGotchi.MVC.Models.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 
@@ -35,7 +36,11 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
 
             var userDto = JsonConvert.DeserializeObject<UserInfoDto>(jsonContent);
@@ -57,7 +62,12 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
         }
 
         public async Task ChangePasswordAsync(string jwt, string id, PasswordChangingDto passwordDto)
@@ -75,7 +85,12 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
         }
 
         public async Task UpdateAvatarAsync(string jwt, string id, IFormFile file)
@@ -99,7 +114,12 @@ namespace InnoGotchi.MVC.Services
             };
 
             var httpClient = _httpClientFactory.CreateClient();
-            await httpClient.SendAsync(httpRequestMessage);
+            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    throw new Exception("Something went wrong");
+            }
         }
     }
 }

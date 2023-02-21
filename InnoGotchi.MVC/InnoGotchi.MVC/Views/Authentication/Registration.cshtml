@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Registration";
 }
-
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+{
+    <div class="alert alert-danger">
+        <strong>@ViewData.ModelState["Error"].Errors.First().ErrorMessage</strong>
+    </div>
+}
 <div class="mask d-flex align-items-center h-80 gradient-custom-3">
     <div class="container h-80">
         <div class="row d-flex justify-content-center align-items-center h-80">

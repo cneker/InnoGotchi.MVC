@@ -2,8 +2,10 @@
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models;
 using InnoGotchi.MVC.Models.User;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using System.Net;
 using System.Text;
 
 namespace InnoGotchi.MVC.Services
@@ -19,7 +21,7 @@ namespace InnoGotchi.MVC.Services
             _mapper = mapper;
         }
 
-        public async Task<UserForAuthenticationDto> RegisterUserAsync(UserForRegistrationDto userForReg)
+        public async Task<UserForAuthenticationDto> RegisterUserAsync(UserForRegistrationDto userForReg, ModelStateDictionary modelState)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -35,6 +37,18 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
+                {
+                    modelState.AddModelError("Error", "This email has already registered");
+                    return null;
+                }
+                else
+                {
+                    throw new Exception("Something went wrong");
+                }
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
             var user = JsonConvert.DeserializeObject<UserInfoDto>(jsonContent);
@@ -43,7 +57,7 @@ namespace InnoGotchi.MVC.Services
             return userForAuth;
         }
 
-        public async Task<AccessTokenDto> SignInAsync(UserForAuthenticationDto userForAuth)
+        public async Task<AccessTokenDto> SignInAsync(UserForAuthenticationDto userForAuth, ModelStateDictionary modelState)
         {
             var httpRequestMessage = new HttpRequestMessage()
             {
@@ -59,6 +73,18 @@ namespace InnoGotchi.MVC.Services
 
             var httpClient = _httpClientFactory.CreateClient();
             var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            if(!httpResponseMessage.IsSuccessStatusCode)
+            {
+                if (httpResponseMessage.StatusCode != HttpStatusCode.InternalServerError)
+                {
+                    modelState.AddModelError("Error", "User not found! May be your email or password is wrong");
+                    return null;
+                }
+                else
+                {
+                    throw new Exception("Something went wrong");
+                }
+            }
 
             var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
             var token = JsonConvert.DeserializeObject<AccessTokenDto>(jsonContent);

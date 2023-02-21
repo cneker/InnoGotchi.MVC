@@ -3,12 +3,13 @@
 @{
     ViewData["Title"] = "SignIn";
 }
-@*@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
+
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"].Errors.Count > 0)
 {
-<div class="alert alert-danger">
-    <strong>Error!</strong> danger">@ViewData.ModelState["Error"].Errors.First().ErrorMessage
-</div>
-}*@
+    <div class="alert alert-danger">
+        <strong>@ViewData.ModelState["Error"].Errors.First().ErrorMessage</strong>
+    </div>
+}
 <div class="container py-5 h-80">
     <div class="row d-flex justify-content-center align-items-center h-100">
         <div class="col-12 col-md-8 col-lg-6 col-xl-5">
