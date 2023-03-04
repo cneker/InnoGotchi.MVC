@@ -1,4 +1,7 @@
 ﻿using FluentValidation;
+using InnoGotchi.Application.Exceptions;
+using InnoGotchi.MVC.Clients;
+using InnoGotchi.MVC.Contracts.Clients;
 using InnoGotchi.MVC.Contracts.Helpers;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Helpers;
@@ -13,12 +16,31 @@ namespace InnoGotchi.MVC.Extensions
 {
     public static class ServiceExtensions
     {
+        public static void ConfigureHttpClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            var webAPISettings = configuration.GetSection("WebAPIHttpClient");
+            var name = webAPISettings.GetRequiredSection("Name").Value;
+            var url = webAPISettings.GetRequiredSection("BaseUrl").Value;
+            services.AddHttpClient(name, conf =>
+            {
+                conf.BaseAddress = new Uri(url);
+            });
+        }
+
         public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFarmService, FarmService>();
             services.AddScoped<IPetService, PetService>();
+        }
+
+        public static void ConfigureClients(this IServiceCollection services)
+        {
+            services.AddScoped<IUserClient, UserClient>();
+            services.AddScoped<IFarmClient, FarmClient>();
+            services.AddScoped<IAuthenticationClient, AuthenticationClient>();
+            services.AddScoped<IPetClient, PetClient>();
         }
 
         public static void ConfigureHelpers(this IServiceCollection services)
@@ -34,8 +56,12 @@ namespace InnoGotchi.MVC.Extensions
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("JwtSettings");
+            var jwtSettings = configuration.GetRequiredSection("JwtSettings");
+            var validIssuer = jwtSettings.GetRequiredSection("validIssuer").Value;
+            var validAudience = jwtSettings.GetRequiredSection("validAudience").Value;
             var key = Environment.GetEnvironmentVariable("SECRET");
+            if (key == null)
+                throw new MissingEnvironmentVariableException("SECRET");
 
             services.AddAuthentication(opt =>
             {
@@ -50,8 +76,8 @@ namespace InnoGotchi.MVC.Extensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
-                    ValidIssuer = jwtSettings.GetSection("validIssuer").Value,
-                    ValidAudience = jwtSettings.GetSection("validAudience").Value,
+                    ValidIssuer = validIssuer,
+                    ValidAudience = validAudience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });

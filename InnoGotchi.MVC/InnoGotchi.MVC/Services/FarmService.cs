@@ -1,211 +1,52 @@
-﻿using InnoGotchi.MVC.Contracts.Services;
+﻿using InnoGotchi.MVC.Contracts.Clients;
+using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.Models.User;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using System.Net;
-using System.Text;
 
 namespace InnoGotchi.MVC.Services
 {
     public class FarmService : IFarmService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IFarmClient _farmClient;
 
-        public FarmService(IHttpClientFactory httpClientFactory)
+        public FarmService(IFarmClient farmClient)
         {
-            _httpClientFactory = httpClientFactory;
+            _farmClient = farmClient;
         }
 
         public async Task<IEnumerable<FarmOverviewDto>> GetFriendsFramsAsync(string jwt, string userId)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/friends"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception("Something went wrong");
-            }
-
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var freindsFarms = JsonConvert.DeserializeObject<IEnumerable<FarmOverviewDto>>(jsonContent);
-
-            return freindsFarms;
+            return await _farmClient.GetFriendsFarmsAsync(userId, jwt);
         }
 
         public async Task<FarmOverviewDto> GetUserFarmOverviewAsync(string jwt, string userId)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-                return null;
-            }
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var farmOverview = JsonConvert.DeserializeObject<FarmOverviewDto>(jsonContent);
-
-            return farmOverview;
+            return await _farmClient.GetFarmAsync(userId, jwt);
         }
 
         public async Task<FarmOverviewDto> CreateFarm(string jwt, string userId, FarmForCreationDto farmDto)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}"}
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(farmDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
-
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var farmOverview = JsonConvert.DeserializeObject<FarmOverviewDto>(jsonContent);
-
-            return farmOverview;
+            return await _farmClient.CreateFarmAsync(userId, jwt, farmDto);
         }
 
         public async Task<FarmStatisticsDto> GetFarmStatisticsAsync(string jwt, string userId, Guid farmId)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/statistics"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception("Something went wrong");
-            }
-
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var farmStatistics = JsonConvert.DeserializeObject<FarmStatisticsDto>(jsonContent);
-
-            return farmStatistics;
+            return await _farmClient.GetFarmStatisticsAsync(userId, farmId.ToString(), jwt);
         }
 
         public async Task<FarmDetailsDto> GetFarmDetailsAsync(string jwt, string userId, Guid farmId)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/detail"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
-                    throw new Exception("You are not the owner or collaborator of this farm");
-                else
-                    throw new Exception("Something went wrong");
-            }
-
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var farmDetails = JsonConvert.DeserializeObject<FarmDetailsDto>(jsonContent);
-
-            return farmDetails;
+            return await _farmClient.GetFarmDetailsAsync(userId, farmId.ToString(), jwt);
         }
 
         public async Task InviteFriendAsync(string jwt, string userId, Guid farmId, UserForInvitingDto userDto)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}/invite-collaborator"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(userDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
-
-            await httpResponseMessage.Content.ReadAsStringAsync();
+            await _farmClient.InviteFriendAsync(userId, farmId.ToString(), jwt, userDto);
         }
 
         public async Task UpdateFarmAsync(string jwt, string userId, Guid farmId, FarmForUpdateDto farmDto)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{userId}/farm/{farmId}"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(farmDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
-
-            await httpResponseMessage.Content.ReadAsStringAsync();
+            await _farmClient.UpdateFarmAsync(userId, farmId.ToString(), jwt, farmDto);
         }
     }
 }

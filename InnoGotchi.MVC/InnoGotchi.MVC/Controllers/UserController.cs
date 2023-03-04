@@ -17,12 +17,18 @@ namespace InnoGotchi.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> UserProfile()
+        private (string, string) GetRequiredParameters()
         {
             var jwt = Request.Cookies["jwt"];
-            var id = User.Claims.First(x => x.Type == "Id").Value;
+            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            return (jwt, userId);
+        }
 
-            var userDto = await _userService.GetUserInfoDtoAsync(jwt, id);
+        public async Task<IActionResult> UserProfile()
+        {
+            var (jwt, userId) = GetRequiredParameters();
+
+            var userDto = await _userService.GetUserInfoDtoAsync(jwt, userId);
 
             var userViewModel = new UserViewModel()
             {
@@ -36,10 +42,9 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateUserInfo(UserViewModel userVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var id = User.Claims.First(x => x.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
-            await _userService.UpdateUserInfoAsync(jwt, id, userVM.UserInfoForUpdate);
+            await _userService.UpdateUserInfoAsync(jwt, userId, userVM.UserInfoForUpdate);
 
             Response.Cookies.Append("name", userVM.UserInfoForUpdate.FirstName);
 
@@ -49,10 +54,9 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(UserViewModel userVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var id = User.Claims.First(x => x.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
-            await _userService.ChangePasswordAsync(jwt, id, userVM.PasswordChanging);
+            await _userService.ChangePasswordAsync(jwt, userId, userVM.PasswordChanging);
 
             return RedirectToAction("UserProfile");
         }
@@ -60,10 +64,9 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateAvatar(UserViewModel userVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var id = User.Claims.First(x => x.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
-            await _userService.UpdateAvatarAsync(jwt, id, userVM.Avatar);
+            await _userService.UpdateAvatarAsync(jwt, userId, userVM.Avatar);
             var path = User.Claims.First(c => c.Type == "Id").Value + "-" + userVM.Avatar.FileName;
             Response.Cookies.Append("avatar", path);
 

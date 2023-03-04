@@ -17,10 +17,16 @@ namespace InnoGotchi.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> PetDetails(Guid farmId, Guid petId)
+        private (string, string) GetRequiredParameters()
         {
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
+            return (jwt, userId);
+        }
+
+        public async Task<IActionResult> PetDetails(Guid farmId, Guid petId)
+        {
+            var (jwt, userId) = GetRequiredParameters();
 
             var pet = await _petService.GetPetDetailsAsync(jwt, userId, farmId, petId);
 
@@ -36,8 +42,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> Feed(Guid farmId, Guid petId)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.FeedAsync(jwt, userId, farmId, petId);
 
@@ -46,8 +51,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> GiveADrink(Guid farmId, Guid petId)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.GiveADrinkAsync(jwt, userId, farmId, petId);
 
@@ -56,8 +60,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> UpdatePet(Guid farmId, Guid petId, PetDetailsViewModel petVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.UpdatePetAsync(jwt, userId, farmId, petId, petVM.PetForUpdate);
 

@@ -19,10 +19,16 @@ namespace InnoGotchi.MVC.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> FarmOverview()
+        private (string, string) GetRequiredParameters()
         {
             var jwt = Request.Cookies["jwt"];
             var userId = User.Claims.First(c => c.Type == "Id").Value;
+            return (jwt, userId);
+        }
+
+        public async Task<IActionResult> FarmOverview()
+        {
+            var (jwt, userId) = GetRequiredParameters();
 
             var farmDto = await _farmService.GetUserFarmOverviewAsync(jwt, userId);
             Response.Cookies.Append("my-farm-id", farmDto == null ? "" : farmDto.Id.ToString());
@@ -33,8 +39,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> FarmDetails(Guid farmId)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             var farmDetails = await _farmService.GetFarmDetailsAsync(jwt, userId, farmId);
             var farmDetailVM = new FarmDetailsViewModel();
@@ -55,8 +60,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> Feed(Guid farmId, Guid petId)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.FeedAsync(jwt, userId, farmId, petId);
 
@@ -65,8 +69,7 @@ namespace InnoGotchi.MVC.Controllers
 
         public async Task<IActionResult> GiveADrink(Guid farmId, Guid petId)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.GiveADrinkAsync(jwt, userId, farmId, petId);
 
@@ -76,8 +79,7 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateFarm(FarmViewModel farmVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             var farmDto = await _farmService.CreateFarm(jwt, userId, farmVM.FarmForCreation);
 
@@ -87,8 +89,7 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> InviteFriend(Guid farmId, FarmDetailsViewModel farmVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _farmService.InviteFriendAsync(jwt, userId, farmId, farmVM.UserForInviting);
 
@@ -98,8 +99,7 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateFarm(Guid farmId, FarmDetailsViewModel farmVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _farmService.UpdateFarmAsync(jwt, userId, farmId, farmVM.FarmForUpdate);
 
@@ -109,8 +109,7 @@ namespace InnoGotchi.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePet(Guid farmId, FarmDetailsViewModel farmVM)
         {
-            var jwt = Request.Cookies["jwt"];
-            var userId = User.Claims.First(c => c.Type == "Id").Value;
+            var (jwt, userId) = GetRequiredParameters();
 
             await _petService.CreatePetAsync(jwt, userId, farmId, farmVM.PetForCreation);
 

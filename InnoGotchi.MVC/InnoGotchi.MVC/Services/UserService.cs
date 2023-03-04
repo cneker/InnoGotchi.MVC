@@ -1,94 +1,34 @@
-﻿using InnoGotchi.MVC.Contracts.Helpers;
+﻿using InnoGotchi.MVC.Contracts.Clients;
+using InnoGotchi.MVC.Contracts.Helpers;
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.User;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using System.Net;
-using System.Text;
 
 namespace InnoGotchi.MVC.Services
 {
     public class UserService : IUserService
     {
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConvertHelper _convertHelper;
+        private readonly IUserClient _userClient;
 
-        public UserService(IHttpClientFactory httpClientFactory, IConvertHelper convertHelper)
+        public UserService(IConvertHelper convertHelper, IUserClient userClient)
         {
-            _httpClientFactory = httpClientFactory;
             _convertHelper = convertHelper;
+            _userClient = userClient;
         }
 
         public async Task<UserInfoDto> GetUserInfoDtoAsync(string jwt, string id)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{id}"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                }
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
-            var jsonContent = await httpResponseMessage.Content.ReadAsStringAsync();
-
-            var userDto = JsonConvert.DeserializeObject<UserInfoDto>(jsonContent);
-            return userDto;
+            return await _userClient.GetUserAsync(id, jwt);
         }
 
         public async Task UpdateUserInfoAsync(string jwt, string id, UserInfoForUpdateDto userDto)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{id}"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(userDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
+            await _userClient.UpdateUserInfoAsync(id, jwt, userDto);
         }
 
         public async Task ChangePasswordAsync(string jwt, string id, PasswordChangingDto passwordDto)
         {
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{id}/change-password"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(passwordDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
+            await _userClient.ChangePasswordAsync(id, jwt, passwordDto);
         }
 
         public async Task UpdateAvatarAsync(string jwt, string id, IFormFile file)
@@ -99,25 +39,7 @@ namespace InnoGotchi.MVC.Services
                 Base64Image = base64Image,
                 FileName = file.FileName
             };
-            var httpRequestMessage = new HttpRequestMessage()
-            {
-                Method = HttpMethod.Put,
-                RequestUri = new Uri($"https://localhost:7208/api/users/{id}/update-avatar"),
-                Headers =
-                {
-                    { HeaderNames.Accept, "application/json; charset=utf-8" },
-                    { HeaderNames.Authorization, $"Bearer {jwt}" }
-                },
-                Content = new StringContent(JsonConvert.SerializeObject(avatarDto), Encoding.UTF8, "application/json")
-            };
-
-            var httpClient = _httpClientFactory.CreateClient();
-            var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                if (httpResponseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                    throw new Exception("Something went wrong");
-            }
+            await _userClient.UpdateAvatarAsync(id, jwt, avatarDto);
         }
     }
 }

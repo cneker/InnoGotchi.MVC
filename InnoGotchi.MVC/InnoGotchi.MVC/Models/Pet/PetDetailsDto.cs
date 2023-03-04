@@ -8,7 +8,7 @@
         public string ThirstyLevel { get; set; }
         public int Age { get; set; }
         public bool IsAlive { get; set; }
-        public double HappynessDayCount { get; set; }
+        public double HappinessDayCount { get; set; }
         public int Body { get; set; }
         public int Eye { get; set; }
         public int Nose { get; set; }

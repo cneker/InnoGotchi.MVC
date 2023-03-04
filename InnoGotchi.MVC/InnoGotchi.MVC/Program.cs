@@ -4,7 +4,7 @@ using InnoGotchi.MVC.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddHttpClient();
+builder.Services.ConfigureHttpClient(builder.Configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureValidators();
 builder.Services.CongifureMapping();
@@ -14,6 +14,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureServices();
 builder.Services.ConfigureCookies();
 builder.Services.ConfigureHelpers();
+builder.Services.ConfigureClients();
 
 var app = builder.Build();
 
