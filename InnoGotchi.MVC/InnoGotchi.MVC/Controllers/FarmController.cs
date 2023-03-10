@@ -26,6 +26,7 @@ namespace InnoGotchi.MVC.Controllers
             return (jwt, userId);
         }
 
+        [HttpGet]
         public async Task<IActionResult> FarmOverview()
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -37,6 +38,7 @@ namespace InnoGotchi.MVC.Controllers
             return View(new FarmViewModel { FarmOverview = farmDto, FriendsFarms = farms });
         }
 
+        [HttpGet]
         public async Task<IActionResult> FarmDetails(Guid farmId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -58,6 +60,7 @@ namespace InnoGotchi.MVC.Controllers
             return View(farmDetailVM);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Feed(Guid farmId, Guid petId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -67,6 +70,7 @@ namespace InnoGotchi.MVC.Controllers
             return RedirectToAction("FarmDetails", new { farmId });
         }
 
+        [HttpPost]
         public async Task<IActionResult> GiveADrink(Guid farmId, Guid petId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -81,7 +85,7 @@ namespace InnoGotchi.MVC.Controllers
         {
             var (jwt, userId) = GetRequiredParameters();
 
-            var farmDto = await _farmService.CreateFarm(jwt, userId, farmVM.FarmForCreation);
+            var farmDto = await _farmService.CreateFarmAsync(jwt, userId, farmVM.FarmForCreation);
 
             return RedirectToAction("FarmOverview");
         }

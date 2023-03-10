@@ -13,7 +13,7 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="d-flex flex-column">
-                            <form asp-controller="Home" asp-action="SetupQueryParameters">
+                            <form asp-controller="Home" asp-action="SetupQueryParameters" method="get">
                                 <h5 class="card-title text-center">Filters</h5>
                                 <p class="card-text mb-0">Order by:</p>
                                 <select asp-for="RequestParameters.OrderType" class="form-select mb-2" aria-label="Пример выбора по умолчанию">

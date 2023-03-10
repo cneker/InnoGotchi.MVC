@@ -7,7 +7,7 @@ namespace InnoGotchi.MVC.Contracts.Services
     {
         Task<FarmOverviewDto> GetUserFarmOverviewAsync(string jwt, string userId);
         Task<IEnumerable<FarmOverviewDto>> GetFriendsFramsAsync(string jwt, string userId);
-        Task<FarmOverviewDto> CreateFarm(string jwt, string userId, FarmForCreationDto farmDto);
+        Task<FarmOverviewDto> CreateFarmAsync(string jwt, string userId, FarmForCreationDto farmDto);
         Task<FarmStatisticsDto> GetFarmStatisticsAsync(string jwt, string userId, Guid farmId);
         Task<FarmDetailsDto> GetFarmDetailsAsync(string jwt, string userId, Guid farmId);
         Task InviteFriendAsync(string jwt, string userId, Guid farmId, UserForInvitingDto userDto);

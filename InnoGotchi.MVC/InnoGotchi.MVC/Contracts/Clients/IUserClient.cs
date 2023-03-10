@@ -1,5 +1,4 @@
 ﻿using InnoGotchi.MVC.Models.User;
-using System.Diagnostics;
 
 namespace InnoGotchi.MVC.Contracts.Clients
 {

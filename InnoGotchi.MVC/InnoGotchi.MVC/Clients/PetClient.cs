@@ -5,7 +5,7 @@ namespace InnoGotchi.MVC.Clients
 {
     public class PetClient : RestClient<PetDetailsDto>, IPetClient
     {
-        public PetClient(IHttpClientFactory clientFactory, IConfiguration configuration) 
+        public PetClient(IHttpClientFactory clientFactory, IConfiguration configuration)
             : base(clientFactory, configuration, "users/userId/farm/farmId/pets/")
         {
         }

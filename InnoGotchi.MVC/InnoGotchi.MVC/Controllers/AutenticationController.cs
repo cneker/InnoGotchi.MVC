@@ -21,11 +21,13 @@ namespace InnoGotchi.MVC.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
         public IActionResult SignIn()
         {
             return View(new UserForAuthenticationDto());
         }
 
+        [HttpGet]
         public IActionResult Registration()
         {
             return View();
@@ -69,6 +71,7 @@ namespace InnoGotchi.MVC.Controllers
             return RedirectToAction("FarmOverview", "Farm");
         }
 
+        [HttpPost]
         public IActionResult LogOut()
         {
             Response.Cookies.Delete("jwt");

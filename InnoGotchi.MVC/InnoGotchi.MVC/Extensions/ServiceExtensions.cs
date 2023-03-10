@@ -18,7 +18,7 @@ namespace InnoGotchi.MVC.Extensions
     {
         public static void ConfigureHttpClient(this IServiceCollection services, IConfiguration configuration)
         {
-            var webAPISettings = configuration.GetSection("WebAPIHttpClient");
+            var webAPISettings = configuration.GetRequiredSection("WebAPIHttpClient");
             var name = webAPISettings.GetRequiredSection("Name").Value;
             var url = webAPISettings.GetRequiredSection("BaseUrl").Value;
             services.AddHttpClient(name, conf =>

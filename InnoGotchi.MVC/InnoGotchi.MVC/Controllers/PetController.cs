@@ -24,6 +24,7 @@ namespace InnoGotchi.MVC.Controllers
             return (jwt, userId);
         }
 
+        [HttpGet]
         public async Task<IActionResult> PetDetails(Guid farmId, Guid petId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -40,6 +41,7 @@ namespace InnoGotchi.MVC.Controllers
             return View(petDetailsVM);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Feed(Guid farmId, Guid petId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -49,6 +51,7 @@ namespace InnoGotchi.MVC.Controllers
             return RedirectToAction("PetDetails", new { farmId, petId });
         }
 
+        [HttpPost]
         public async Task<IActionResult> GiveADrink(Guid farmId, Guid petId)
         {
             var (jwt, userId) = GetRequiredParameters();
@@ -58,6 +61,7 @@ namespace InnoGotchi.MVC.Controllers
             return RedirectToAction("PetDetails", new { farmId, petId });
         }
 
+        [HttpPost]
         public async Task<IActionResult> UpdatePet(Guid farmId, Guid petId, PetDetailsViewModel petVM)
         {
             var (jwt, userId) = GetRequiredParameters();

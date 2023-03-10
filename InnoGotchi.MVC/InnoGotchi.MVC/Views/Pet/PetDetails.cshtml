@@ -46,8 +46,14 @@
                                 @if (Model.PetDetails.IsAlive)
                                 {
                                     <p class="card-text mb-0">Status: Alive</p>
-                                    <a asp-controller="Pet" asp-action="Feed" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" class="btn btn-primary">Feed</a>
-                                    <a asp-controller="Pet" asp-action="GiveADrink" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" class="btn btn-primary">Give a drink</a>
+                                    <div class="row">
+                                        <form asp-controller="Pet" asp-action="Feed" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" method="post" class="col-4">
+                                            <input type="submit" class="btn btn-primary" value="Feed">
+                                        </form>
+                                        <form asp-controller="Pet" asp-action="GiveADrink" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" method="post" class="col">
+                                            <input type="submit" class="btn btn-primary" value="Give a drink">
+                                        </form>
+                                    </div>
                                 }
                                 else
                                 {

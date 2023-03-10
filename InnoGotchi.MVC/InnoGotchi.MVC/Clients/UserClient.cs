@@ -5,7 +5,7 @@ namespace InnoGotchi.MVC.Clients
 {
     public class UserClient : RestClient<UserInfoDto>, IUserClient
     {
-        public UserClient(IHttpClientFactory clientFactory, IConfiguration configuration) 
+        public UserClient(IHttpClientFactory clientFactory, IConfiguration configuration)
             : base(clientFactory, configuration, "users/")
         {
         }

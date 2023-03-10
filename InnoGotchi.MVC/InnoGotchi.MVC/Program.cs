@@ -32,8 +32,8 @@ app.UseRouting();
 
 app.UseMiddleware<AddingAuthenticationHeaderMiddleware>();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -24,7 +24,7 @@ namespace InnoGotchi.MVC.Services
             return await _farmClient.GetFarmAsync(userId, jwt);
         }
 
-        public async Task<FarmOverviewDto> CreateFarm(string jwt, string userId, FarmForCreationDto farmDto)
+        public async Task<FarmOverviewDto> CreateFarmAsync(string jwt, string userId, FarmForCreationDto farmDto)
         {
             return await _farmClient.CreateFarmAsync(userId, jwt, farmDto);
         }

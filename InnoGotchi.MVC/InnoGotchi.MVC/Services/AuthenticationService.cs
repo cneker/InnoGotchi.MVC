@@ -37,7 +37,7 @@ namespace InnoGotchi.MVC.Services
             var token = await _authenticationClient.SignInAsync(userForAuth);
             if (token == null)
             {
-                modelState.AddModelError("Error", "User not found! May be your email or password is wrong");
+                modelState.AddModelError("Error", "User not found! May be your email or password are wrong");
                 return null;
             }
             return token;

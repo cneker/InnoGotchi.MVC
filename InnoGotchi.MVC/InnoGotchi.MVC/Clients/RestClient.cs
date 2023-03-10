@@ -56,7 +56,7 @@ namespace InnoGotchi.MVC.Clients
                         throw new Exception("You don't have any permissions do to this action");
                     default:
                         throw new Exception("Something went wrong");
-                }   
+                }
             }
 
             return await httpResponseMessage.Content.ReadAsAsync<T>();

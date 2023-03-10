@@ -24,6 +24,7 @@ namespace InnoGotchi.MVC.Controllers
             return (jwt, userId);
         }
 
+        [HttpGet]
         public async Task<IActionResult> UserProfile()
         {
             var (jwt, userId) = GetRequiredParameters();

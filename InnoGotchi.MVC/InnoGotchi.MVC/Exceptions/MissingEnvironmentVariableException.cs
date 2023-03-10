@@ -2,7 +2,7 @@
 {
     public class MissingEnvironmentVariableException : Exception
     {
-        public MissingEnvironmentVariableException(string variable) 
+        public MissingEnvironmentVariableException(string variable)
             : base($"An environmet variable \"{variable}\" is missing")
         {
         }

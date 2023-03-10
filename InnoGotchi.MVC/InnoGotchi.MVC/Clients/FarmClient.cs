@@ -6,7 +6,7 @@ namespace InnoGotchi.MVC.Clients
 {
     public class FarmClient : RestClient<FarmOverviewDto>, IFarmClient
     {
-        public FarmClient(IHttpClientFactory clientFactory, IConfiguration configuration) 
+        public FarmClient(IHttpClientFactory clientFactory, IConfiguration configuration)
             : base(clientFactory, configuration, "users/userId/farm/")
         {
         }
