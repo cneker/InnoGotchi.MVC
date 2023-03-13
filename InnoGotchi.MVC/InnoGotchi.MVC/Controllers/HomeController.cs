@@ -1,6 +1,7 @@
 ﻿using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models;
 using InnoGotchi.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -15,7 +16,7 @@ namespace InnoGotchi.MVC.Controllers
             _petService = petService;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult SetupQueryParameters(AllPetsViewModel allPetsVM)
         {
             var pageNumber = allPetsVM.RequestParameters.CurrentPage;
@@ -33,7 +34,7 @@ namespace InnoGotchi.MVC.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public async Task<IActionResult> AllInnoGotchi(int pageNumber, int orderBy, int pageSize)
         {
             var jwt = Request.Cookies["jwt"];

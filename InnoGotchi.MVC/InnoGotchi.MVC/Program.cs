@@ -1,5 +1,4 @@
 using InnoGotchi.MVC.Extensions;
-using InnoGotchi.MVC.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +7,8 @@ builder.Services.ConfigureHttpClient(builder.Configuration);
 builder.Services.AddControllersWithViews();
 builder.Services.ConfigureValidators();
 builder.Services.CongifureMapping();
+builder.Services.ConfigureCookieAuthentication();
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication();
-builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureServices();
 builder.Services.ConfigureCookies();
 builder.Services.ConfigureHelpers();
@@ -29,8 +27,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseMiddleware<AddingAuthenticationHeaderMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

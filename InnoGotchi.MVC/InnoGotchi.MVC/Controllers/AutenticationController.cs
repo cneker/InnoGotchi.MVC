@@ -1,8 +1,13 @@
 ﻿using FluentValidation;
 using FluentValidation.AspNetCore;
 using InnoGotchi.MVC.Contracts.Services;
+using InnoGotchi.MVC.Models;
 using InnoGotchi.MVC.Models.User;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using IAuthenticationService = InnoGotchi.MVC.Contracts.Services.IAuthenticationService;
 
 namespace InnoGotchi.MVC.Controllers
 {
@@ -61,6 +66,9 @@ namespace InnoGotchi.MVC.Controllers
                 return View(userForAuth);
             }
 
+            var claimPrincipal = CreateClaimsPrincipal(token);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimPrincipal);
+
             Response.Cookies.Append("jwt", token.AccessToken);
 
             var user = await _userService.GetUserInfoDtoAsync(token.AccessToken, token.UserId.ToString());
@@ -72,14 +80,28 @@ namespace InnoGotchi.MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
             Response.Cookies.Delete("jwt");
             Response.Cookies.Delete("name");
             Response.Cookies.Delete("avatar");
             Response.Cookies.Delete("my-farm-id");
 
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
             return RedirectToAction("Index", "Home");
+        }
+
+        private ClaimsPrincipal CreateClaimsPrincipal(AccessTokenDto accessModel)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim("Id", accessModel.UserId.ToString())
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            return claimPrincipal;
         }
     }
 }

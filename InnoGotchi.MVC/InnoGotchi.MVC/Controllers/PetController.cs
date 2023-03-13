@@ -2,10 +2,12 @@
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Pet;
 using InnoGotchi.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.MVC.Controllers
 {
+    [Authorize]
     public class PetController : Controller
     {
         private readonly IPetService _petService;

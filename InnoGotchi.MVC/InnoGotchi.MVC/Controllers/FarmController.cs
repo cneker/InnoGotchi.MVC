@@ -2,10 +2,12 @@
 using InnoGotchi.MVC.Contracts.Services;
 using InnoGotchi.MVC.Models.Farm;
 using InnoGotchi.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InnoGotchi.MVC.Controllers
 {
+    [Authorize]
     public class FarmController : Controller
     {
         private readonly IFarmService _farmService;

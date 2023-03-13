@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using InnoGotchi.Application.Exceptions;
 using InnoGotchi.MVC.Clients;
 using InnoGotchi.MVC.Contracts.Clients;
 using InnoGotchi.MVC.Contracts.Helpers;
@@ -8,9 +7,7 @@ using InnoGotchi.MVC.Helpers;
 using InnoGotchi.MVC.Mapper;
 using InnoGotchi.MVC.Services;
 using InnoGotchi.MVC.Validators.User;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InnoGotchi.MVC.Extensions
 {
@@ -54,37 +51,14 @@ namespace InnoGotchi.MVC.Extensions
         public static void ConfigureValidators(this IServiceCollection services) =>
             services.AddValidatorsFromAssemblyContaining<UserForRegistrationDtoValidator>();
 
-        public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
-        {
-            var jwtSettings = configuration.GetRequiredSection("JwtSettings");
-            var validIssuer = jwtSettings.GetRequiredSection("validIssuer").Value;
-            var validAudience = jwtSettings.GetRequiredSection("validAudience").Value;
-            var key = Environment.GetEnvironmentVariable("SECRET");
-            if (key == null)
-                throw new MissingEnvironmentVariableException("SECRET");
-
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-
-                    ValidIssuer = validIssuer,
-                    ValidAudience = validAudience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
-                };
-            });
-        }
-
         public static void ConfigureCookies(this IServiceCollection services) =>
             services.ConfigureApplicationCookie(opts =>
                 opts.ExpireTimeSpan = TimeSpan.FromDays(1));
+
+        public static void ConfigureCookieAuthentication(this IServiceCollection services)
+        {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(opt => opt.LoginPath = "/Authentication/SignIn");
+        }
     }
 }
