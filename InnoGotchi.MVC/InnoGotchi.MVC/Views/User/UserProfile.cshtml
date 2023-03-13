@@ -1,0 +1,119 @@
+﻿@model InnoGotchi.MVC.ViewModels.UserViewModel
+
+@{
+	ViewData["Title"] = "Profile";
+}
+
+<link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
+
+<div class="container">
+	<div class="main-body">
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex flex-column align-items-center text-center">
+							<img src="https://localhost:7208/images/avatars/@Context.Request.Cookies["avatar"]" alt="img" class="rounded-circle p-1 bg-primary" width="110" height="110">
+							<div class="mt-3">
+								<h4>@Model.UserInfo.Email</h4>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-8">
+				<div class="card">
+					<div class="card-body">
+						<form asp-controller="User" asp-action="UpdateUserInfo" method="post">
+							<h5 class="d-flex align-items-center mb-3">Personal Information</h5>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">First Name</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" class="form-control" id="first-name" asp-for="UserInfoForUpdate.FirstName" required maxlength="30">
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Second Name</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" class="form-control" id="second-name" asp-for="UserInfoForUpdate.LastName" required maxlength="30">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-3"></div>
+								<div class="col-sm-9 text-secondary">
+									<input type="submit" class="btn btn-primary px-4" id="update-user-info" value="Save Changes" />
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<form asp-controller="User" asp-action="ChangePassword" method="post">
+								<h5 class="d-flex align-items-center mb-3">Change password</h5>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Old Password</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input type="password" class="form-control" id="old-password" asp-for="PasswordChanging.OldPassword" required minlength="5" maxlength="30">
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">New Password</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input type="password" class="form-control" id="new-password" asp-for="PasswordChanging.NewPassword" required minlength="5" maxlength="30">
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h6 class="mb-0">Confirm Password</h6>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input type="password" class="form-control" id="new-password-confirm" asp-for="PasswordChanging.ConfirmedPassword" required minlength="5" maxlength="30">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-3"></div>
+									<div class="col-sm-9 text-secondary">
+										<input type="submit" class="btn btn-primary px-4" id="change-password" value="Change">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-body">
+							<form asp-controller="User" asp-action="UpdateAvatar" method="post" enctype="multipart/form-data">
+								<div class="row mb-3">
+									<div class="col-sm-3">
+										<h5 class="mb-0">Update Avatar</h5>
+									</div>
+									<div class="col-sm-9 text-secondary">
+										<input class="form-control" type="file" asp-for="Avatar" accept="image/*" id="formFile" required>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-3"></div>
+									<div class="col-sm-9 text-secondary">
+										<input type="submit" class="btn btn-primary px-4" value="Update">
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

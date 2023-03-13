@@ -1,0 +1,102 @@
+﻿@model InnoGotchi.MVC.ViewModels.PetDetailsViewModel
+
+@{
+    ViewData["Title"] = "Pet details";
+
+    var bodyPath = $"https://localhost:7208/images/bodies/body{Model.PetDetails.Body}.svg";
+    var eyesPath = $"https://localhost:7208/images/eyes/eyes{Model.PetDetails.Eye}.svg";
+    var nosePath = $"https://localhost:7208/images/noses/nose{Model.PetDetails.Nose}.svg";
+    var mouthPath = $"https://localhost:7208/images/mouths/mouth{Model.PetDetails.Mouth}.svg";
+}
+
+<link rel="stylesheet" href="~/css/FarmOverview.css" asp-append-version="true" />
+
+<div class="container py-3">
+    <div class="d-flex flex-column">
+        <div class="row">
+            <div class="col-sm-1 d-flex flex-column">
+                <a asp-controller="Farm" asp-action="FarmDetails" asp-route-farmId="@Model.FarmId" class="btn btn-primary">Back</a>
+            </div>
+            <div class="col-lg-8 align-items-center">
+                <div class="card" style="width: 60rem; height: 36rem;">
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <h5 class="card-title">
+                                @Model.PetDetails.Name
+                                @if (Model.PetDetails.IsAlive && Model.FarmId.ToString() == Context.Request.Cookies["my-farm-id"])
+                                {
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        Change
+                                    </button>
+                                }
+                            </h5>
+                            <div class="col-sm-3">
+
+                                <p class="card-text mb-0">Hunger level: @Model.PetDetails.HungerLevel</p>
+                                <p class="card-text mb-0">Thirsty level: @Model.PetDetails.ThirstyLevel</p>
+                                @if (Model.PetDetails.Age == 0)
+                                {
+                                    <p class="card-text mb-0">Age: Newborn</p>
+                                }
+                                else
+                                {
+                                    <p class="card-text mb-0">Age: @Model.PetDetails.Age</p>
+                                }
+                                <p class="card-text">Happiness days count: @Model.PetDetails.HappinessDayCount</p>
+                                @if (Model.PetDetails.IsAlive)
+                                {
+                                    <p class="card-text mb-0">Status: Alive</p>
+                                    <div class="row">
+                                        <form asp-controller="Pet" asp-action="Feed" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" method="post" class="col-4">
+                                            <input type="submit" class="btn btn-primary" value="Feed">
+                                        </form>
+                                        <form asp-controller="Pet" asp-action="GiveADrink" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" method="post" class="col">
+                                            <input type="submit" class="btn btn-primary" value="Give a drink">
+                                        </form>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p class="card-text mb-0">Status: Dead</p>
+                                }
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="flex-column position-relative d-flex col mb-4">
+                                    <img id="body" alt="error" style="max-width: 90%" data-type="@Model.PetDetails.Body" src="@bodyPath" />
+                                    <img id="eyes" alt="error" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" src="@eyesPath" />
+                                    <img id="nose" alt="error" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" src="@nosePath" />
+                                    <img id="mouth" alt="error" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" src="@mouthPath" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Change pet name</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Pet" asp-action="UpdatePet" asp-route-farmId="@Model.FarmId" asp-route-petId="@Model.PetDetails.Id" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" asp-for="PetForUpdate.Name" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <input type="submit" class="btn btn-primary" value="Change" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/petDetails.js"></script>
