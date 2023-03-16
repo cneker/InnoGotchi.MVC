@@ -1,0 +1,58 @@
+﻿@model InnoGotchi.MVC.Models.User.UserForRegistrationDto
+
+@{
+    ViewData["Title"] = "Registration";
+}
+@if (!ViewData.ModelState.IsValid && ViewData.ModelState["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <strong>@ViewData.ModelState["Error"].Errors.First().ErrorMessage</strong>
+    </div>
+}
+<div class="mask d-flex align-items-center h-80 gradient-custom-3">
+    <div class="container h-80">
+        <div class="row d-flex justify-content-center align-items-center h-80">
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                <div class="card" style="border-radius: 15px;">
+                    <div class="card-body p-4">
+                        <h3 class="text-uppercase text-center mb-5">Create an account</h3>
+
+                        <form asp-controller="Authentication" asp-action="Registration" method="post">
+                            <div class="form-outline mb-2">
+                                <input type="text" asp-for="FirstName" class="form-control form-control-lg" placeholder="Your First Name" required maxlength="30" />
+                            </div>
+
+                            <div class="form-outline mb-2">
+                                <input type="text" asp-for="LastName" class="form-control form-control-lg" placeholder="Your Second Name" required maxlength="30"/>
+                            </div>
+
+                            <div class="form-outline mb-2">
+                                <input type="email" asp-for="Email" class="form-control form-control-lg" placeholder="Your Email" required />
+                            </div>
+
+                            <div class="form-outline mb-2">
+                                <span style="color: red; font-size: 12px" asp-validation-for="ConfirmedPassword"></span>
+                                <input type="password" asp-for="Password" class="form-control form-control-lg" placeholder="Password" required minlength="5" maxlength="30" />
+                            </div>
+
+                            <div class="form-outline mb-2">
+                                <span style="color: red; font-size: 12px" asp-validation-for="ConfirmedPassword"></span>
+                                <input type="password" asp-for="ConfirmedPassword" class="form-control form-control-lg" placeholder="Repeat your password" required minlength="5" maxlength="30" />
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <input type="submit" class="btn btn-primary btn-lg btn-block" value="Register" />
+                            </div>
+
+                            <p class="text-center text-muted mt-5 mb-0">
+                                Have already an account? <a asp-controller="Authentication" asp-action="SignIn" class="fw-bold text-body"><u>Login here</u></a>
+                            </p>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+﻿@model InnoGotchi.MVC.ViewModels.AllPetsViewModel
+
+@{
+    ViewData["Title"] = "All InnoGotchi";
+}
+
+<link rel="stylesheet" href="~/css/FarmOverview.css"/>     
+ 
+<div class="container">
+	<div class="main-body">
+		<div class="row">
+			<div class="col-lg-3">
+				<div class="card">
+					<div class="card-body">
+						<div class="d-flex flex-column">
+                            <form asp-controller="Home" asp-action="SetupQueryParameters" method="get">
+                                <h5 class="card-title text-center">Filters</h5>
+                                <p class="card-text mb-0">Order by:</p>
+                                <select asp-for="RequestParameters.OrderType" class="form-select mb-2" aria-label="Пример выбора по умолчанию">
+                                    <option selected value="1">Happyness days count</option>
+                                    <option value="2">Age</option>
+                                    <option value="3">Hunger level</option>
+                                    <option value="4">Thirsty level</option>
+                                </select>
+                                <p class="card-text mb-0">Pets count:</p>
+                                <input type="number" min="1" max="15" class="form-control mb-3" id="recipient-name" asp-for="RequestParameters.PageSize" required/>
+                                <input type="hidden" asp-for="RequestParameters.CurrentPage"/>
+                                <input type="submit" class="btn btn-primary" value="Update"/>
+                            </form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-9">
+                <div class="row">
+                    <div class="d-flex flex-column align-items-center">
+                        @foreach (var pet in Model.PetPaging.PetDetails)
+                        {
+                            <div class="card" style="width: 40rem; height: 15rem;">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                                
+                                            <h5 class="card-title">@pet.Name</h5>
+                                            <p class="card-text mb-0">Hunger level: @pet.HungerLevel</p>
+                                            <p class="card-text mb-0">Thirsty level: @pet.ThirstyLevel</p>
+                                            @if (pet.Age == 0)
+                                            {
+                                                <p class="card-text mb-0">Age: newborn</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="card-text mb-0">Age: @pet.Age</p>
+                                            }
+                                            <p class="card-text mb-0">Happyness days count: @pet.HappinessDayCount</p>
+                                            @if (pet.IsAlive)
+                                            {
+                                                <p class="card-text">Status: Alive</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="card-text">Status: Dead</p>
+                                            }
+                                        </div>
+                                        <div class="col-lg-7">
+                                            @{
+                                                var bodyPath = $"https://localhost:7208/images/bodies/body{pet.Body}.svg";
+                                                var eyesPath = $"https://localhost:7208/images/eyes/eyes{pet.Eye}.svg";
+                                                var nosePath = $"https://localhost:7208/images/noses/nose{pet.Nose}.svg";
+                                                var mouthPath = $"https://localhost:7208/images/mouths/mouth{pet.Mouth}.svg";
+
+                                                <div class="flex-column position-relative d-flex col">
+                                                    <img name="body" alt="error" style="max-width: 90%" data-type="@pet.Body" src="@bodyPath" />
+                                                    <img name="eyes" alt="error" style="max-width: 20%; margin-left: 32%; margin-top: 15%" class="position-absolute" src="@eyesPath" />
+                                                    <img name="nose" alt="error" style="max-width: 8%; margin-left: 38%; margin-top: 26%" class="position-absolute" src="@nosePath" />
+                                                    <img name="mouth" alt="error" style="max-width: 19%; margin-left: 33%; margin-top: 28%" class="position-absolute" src="@mouthPath" />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="d-flex flex-column position-absolute start-50 translate-middle mt-3">
+    <nav aria-label="Пример навигации по страницам">
+        <ul class="pagination">
+            @if(Model.PetPaging.MetaData.HasPreviuos)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Home" asp-action="AllInnoGotchi" asp-route-orderBy="@Model.RequestParameters.OrderType" 
+                    asp-route-pageSize="@Model.RequestParameters.PageSize" asp-route-pageNumber="@(Model.RequestParameters.CurrentPage-1)">Следующая</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled"><span class="page-link">Предыдущая</span></li>
+            }
+            @for (int i = 1; i <= Model.PetPaging.MetaData.TotalPages; i++)
+            {
+                if (Model.PetPaging.MetaData.CurrentPage == i)
+                {
+                    <li class="page-item active"><span class="page-link">@i</span></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="Home" asp-action="AllInnoGotchi" 
+                            asp-route-orderBy="@Model.RequestParameters.OrderType" asp-route-pageSize="@Model.RequestParameters.PageSize" asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+            }
+            @if (Model.PetPaging.MetaData.HasNext)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Home" asp-action="AllInnoGotchi" asp-route-orderBy="@Model.RequestParameters.OrderType" 
+                    asp-route-pageSize="@Model.RequestParameters.PageSize" asp-route-pageNumber="@(Model.RequestParameters.CurrentPage+1)">Следующая</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled"><span class="page-link">Следующая</span></li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<script src="~/js/allInnoGotchi.js"></script>
